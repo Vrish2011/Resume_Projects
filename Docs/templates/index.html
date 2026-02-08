@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Online word proccessor</title>
+        <style>
+            body{
+                min-height: 2000px;
+               
+            }
+           
+            .auth.background_div {
+                position:absolute;
+                left: 50%;
+                width: 50%;
+                background-color: rgb(0,0,255);
+                height: 100%;
+            }
+
+            .auth.error{
+                position: absolute;
+                display:flex;
+                justify-content:flex-start;
+                width: 200px;
+                height:25px;
+                align-items:center;
+                background-color: rgb(255, 210, 210);
+                border-radius:10%;
+                padding: 20px 10px;
+                top: 60%;
+                left: 10%;
+                color: rgb(255,0,0)
+            }
+            .auth.error button{
+                margin-right: auto;
+                background-color:rgb(255, 210, 210);
+                border:none;
+            }
+            .auth.error svg{
+                opacity: 1;
+            }
+
+        
+
+            .auth.field_input.username{
+                position: absolute;
+                top: 50%;
+                left: 7.5%;
+                height: 50px;
+                width: 400px;
+                line-height: 50px;
+                padding: 0px 10px;
+                font-size: 20px;
+                outline: none;
+               
+
+
+            }
+
+
+           
+
+
+            .auth.oval_auth{
+                position: absolute;
+                left: 5%;
+                top: 20%;
+                width: 450px;
+                background-color: rgb(200,200, 200);
+                padding: 10px 10px;
+                height: 50px;
+                border-radius: 999px;
+                display: flex;
+               
+               
+            }
+            .auth.small_auth {
+                position: relative;
+                z-index: 2;
+
+
+                transition:background-color 0.3s ease,transform 0.3s ease,justify-content 0.3s ease;
+            }
+
+            a {
+                color:rgb(0, 0, 255);
+            }
+   
+       
+       
+       
+
+
+            .auth.small_auth.inactive.password{
+                position: relative;
+                display:flex;
+                justify-content:flex-end;
+                align-items:center;
+                color: rgb(125,125, 125);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-weight: 500;
+                margin-right:auto;
+                position: relative;
+                left: 50px;               
+               
+            }
+
+
+            .auth.login {
+                display:flex;
+                justify-content:center;
+                align-items: center;
+                width: 300px;
+                height: 50px;
+                position: absolute;
+                top: 75%;
+                left: 7.5%;
+                border-radius: 999px;
+                background-color: rgb(0, 0, 255);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-weight: 100;  
+                color: white;
+                text-align: left;
+                padding-left: 20px;
+                font-size: 20px;
+                transition: ease 0.4s;
+                outline:none;
+               
+
+
+            }
+            .auth.login:hover{
+                background-color: rgb(0, 89, 255)
+
+
+            }
+
+
+            .auth.small_auth.inactive.username{
+                position: relative;
+                display:flex;
+               
+                align-items:center;
+                margin: auto;
+                color: rgb(125,125, 125);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-weight: 500;  
+               
+               
+            }
+
+
+            .auth.div{
+                position: absolute;
+                left: 7.5%;
+                top: 90%;
+            }
+            .auth.div a {
+                text-decoration: underline
+            }
+           
+
+
+
+
+            .auth.small_auth.active{
+               
+                width: 200px;
+                height: 10px;
+                padding: 20px 15px ;
+                display: flex;
+                justify-content: center; /* horizontal */
+                align-items: center;
+                font-family: "Segoe UI", Arial, sans-serif;
+                color: white;
+                font-weight: 500;
+
+   
+                background-color: rgb(0,0,255);
+                border-radius: 999px;
+
+
+
+
+            }
+
+            .main.top{
+                position: absolute;
+                top: 12.5%;;
+                width: 100%;
+                height: 400px;
+                background-color: rgb(220,220, 220);
+            
+            }
+
+            .main.search{
+                position: absolute;
+                font-family: "Segoe UI", Arial, sans-serif;
+                top: 2.5%;
+                left: 30%;
+                border-radius: 999px;
+                height: 20px;
+                padding: 20px 25px;
+                font-size: 20px;
+                width: 450px;
+                border:solid 1px rgb(220,220, 220);
+                
+            }
+
+            .main.add_doc{
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                
+                position: absolute;
+                top: 20%;
+                left: 10%;
+                width: 200px;
+                height: 250px;
+                background-color: white;
+                transition: 0.3s ease;
+
+  
+            }
+
+            .main.add_doc:hover{
+                background-color: rgb(200,200,200);
+
+            }
+
+            .main.overlay{
+                position: absolute;
+                background-color: rgb(200,200,200);
+                top: 0%;
+                left:0%;
+                width: 100%;
+                height: 100%;
+                opacity: 0.5;
+                z-index: 1;
+
+            }
+
+            .main.overlay_div{
+                position: absolute;
+                top: 30%;
+                left: 30%;
+                
+                
+                background-color: white;
+                border-radius: 50px;
+                width: 600px;
+                height:400px;
+                opacity: 0;
+                z-index:2;
+                transition:transform 250ms cubic-bezier(1, 2, 0.2, 1), opacity 200ms ease;
+                transform-origin: center;
+
+      
+      
+    
+
+
+            }
+
+            .main.overlay_div.initial {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+
+            .main.overlay_div.final {
+                transform: scale(1);
+                opacity: 1;
+            }
+            
+    
+            .main.overlay_button{
+                position: absolute;
+                top: 75%;
+                left: 50%;
+                border-radius: 999px;
+                width: 175px;
+                height: 80px;
+                color:white;
+                font-size: 25px;
+                background-color: rgb(0, 0, 255);
+                transition: 0.3s ease;
+                outline:none;
+                
+            }
+            .main.overlay_button.hover{
+                background-color: rgb(100, 100, 255);
+
+            }
+    
+    
+
+
+
+            .main.overlay_input{
+                padding: 20px 20px;
+                position:absolute;
+                top: 50%;
+                left:53%;
+                transform: translate(-50%, -50%);
+                width: 300px;
+                height: 50px;
+                border-radius: 5px;
+                font-size: 30px;
+                border: 1px solid rgb(200,200, 200);
+            }
+
+            .main.overlay_input:focus{
+                outline: none; 
+                
+                border: 2px solid rgb(25,50, 255)
+
+            }
+
+            .main.overlay_div.information{
+                font-size: 15px;
+                position: absolute;
+                top: 40%;
+                left: 50%
+
+            }
+
+            .main.body{
+                width:800px;
+                height: 2500px;
+            }
+
+            .main.docs{
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 40px;
+
+            }
+
+            .main.doc{
+                position: relative;
+                width: 300px;
+                height: 375px;
+               
+                background-color: rgb(253,253,253);
+                transition: 0.3s ease;
+                overflow-y: hidden;
+                transition: transform 0.25s ease, box-shadow 0.25s ease;
+                box-shadow:0 4px 12px rgba(0, 0, 0, 0.08);
+                top: 650px;
+                position: 250px;
+                border: solid 2px rgb(220,220, 220);
+                border-radius: 6px;
+                background: #ffffff;
+                
+
+            }
+            .main.doc:hover{
+                cursor:pointer;
+                transform: translateY(-6px);
+                box-shadow: 0 14px 30px rgba(0,0,0,0.15);
+    
+                border:1px solid blue;
+            }
+
+            .main.title{
+                position:absolute;
+                width: 100%;
+                height: 50px;
+                left:0%;
+                top:90%;
+                border-top: 0.05px inset rgb(220,220,220);
+                padding-left: 20px;
+                z-index: 1;
+                
+                border-radius: 6px;
+                
+                
+
+            }
+
+            .main.edit_doc{
+                position: absolute;
+                left: 25%;
+                top: 0%;
+                width: 600px;
+                height: auto;
+                min-height: 100vh;
+                padding: 100px 100px;
+                overflow-y: auto;
+                border-radius: 6px;
+                box-shadow:0 4px 12px rgba(0, 0, 0, 0.08);
+                border: 2px solid rgb(220,220,220);
+                background-color: white;
+            }
+
+            .main.edit_doc:focus{
+                outline:none;
+            }
+
+            .main.background{
+                position: absolute;
+                z-index: -1;
+                width: 100%;
+                height: 100%;
+                top:0%;
+
+                background-color: rgb(220,220, 220);
+                position: fixed
+            }
+
+            .main.button_share{
+                position: fixed;
+                border-radius: 999px;
+                background-color:rgb(0, 0, 255);
+                font-family: Arial, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                font-weight: 500;
+                top: 10%;
+                left: 10%;
+                color: white;
+                padding: 10px 50px;
+                transition: all 0.3s;
+            }
+
+            .main.button_share:hover{
+                cursor: pointer;
+                background-color:rgb(0, 89, 255)
+            }
+
+            
+
+            
+            
+            
+
+            
+
+            
+            
+
+            
+        </style>
+       
+
+
+    </head>
+
+
+    <body>
+
+
+        <script>
+            let ws = null
+
+
+            const body_div = document.createElement("div")
+            document.body.appendChild(body_div)
+           
+
+
+            function Register(){
+                window.history.pushState({}, "", "/website/register");
+
+
+  
+
+                
+                let divs = document.querySelectorAll("div")
+                
+                for(let i = 0; i < divs.length; i++){
+                    if(divs[i] != body_div){
+                        divs[i].remove()
+
+
+                    }
+                }
+
+
+               
+                const div = document.createElement("div")
+                div.className = "auth background_div"
+               
+                let field = "username"
+
+
+                let username = ""
+                let password = ""
+               
+               
+               
+                body_div.appendChild(div)
+                const input = document.createElement("input")
+                input.className = "auth field_input username"
+                if(field == "username"){
+                    input.placeholder = "Username"
+                }
+                else{
+                    input.placeholder = "Password"
+                }
+                const dont_haveanaccount = document.createElement("div")
+                dont_haveanaccount.innerHTML = `Already have an account <a id="url">Login here</a>`
+                dont_haveanaccount.onclick = function(event){
+                    
+                    
+                    if(event.target.id == "url"){
+                        
+
+                        event.preventDefault()
+                        Login()
+                    }
+                }
+                dont_haveanaccount.className = "auth div"
+                body_div.appendChild(dont_haveanaccount)
+
+
+                input.value = username
+                let default_border = input.style.border
+                input.onfocus = function(event){
+                    input.style.border =  "3px solid blue"
+                }
+                input.oninput = function(event){
+                    if(field == "username"){
+                        username = input.value
+                   
+                    }
+                    if(field == "password"){
+                        password = input.value
+                    }
+                }
+                input.onblur = function(event){
+                    input.style.border = default_border;
+                }
+           
+                body_div.appendChild(input)
+                const oval_div = document.createElement("div")
+                oval_div.className = "auth oval_auth"
+                
+                document.body.appendChild(oval_div)
+                const username_div = document.createElement("div")
+                username_div.className = "auth small_auth active"
+                username_div.textContent = "Username"
+                username_div.onclick = ""
+               
+               
+                username_div.onmouseover = function(event){
+                    username_div.style.cursor = "default"
+                }
+               
+           
+
+
+           
+                oval_div.appendChild(username_div)
+                const password_div = document.createElement("div")
+                password_div.textContent = "Password"
+                password_div.className = "auth small_auth inactive password"
+            
+               
+                password_div.onmouseover = function(event){
+                    password_div.style.cursor = "pointer"
+                }
+                
+                const Login_button = document.createElement("button")
+                Login_button.textContent = "Register"
+                Login_button.onmouseover = function(event){
+                    Login_button.style.cursor = "pointer"
+                }
+                Login_button.className = "auth login"
+                Login_button.onclick = function(){
+                    fetch("/register", {method: "POST", headers : {"Content-type":"application/json"}, body : JSON.stringify({username:username, password:password})})
+                    .then(response => response.json())
+                    .then(function(data){
+                        if(data.error){
+                            let errors = document.querySelectorAll(".auth.error")
+                            
+                            for(let i = 0; i < errors.length; i++){
+                                errors[i].remove()
+                            }
+                            const error = document.createElement("div")
+                            error.className = "auth error"
+
+                            error.innerHTML = `${data.error} + <button><svg id="button" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="red">
+  <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/>
+</svg></button>`
+
+                            body_div.appendChild(error)
+                            const button = document.getElementById("button")
+                            button.onmouseover = function(event){
+                                button.style.cursor = "pointer"
+                            }
+
+                            button.onclick = function(event){
+                                error.remove()
+                            }
+                        }
+
+                        else{
+                            localStorage.setItem("access_token", data.access_token)
+                            
+                               
+                            let divs = document.querySelectorAll("div")
+                            for(let i =0; i < divs.length; i++){
+                                divs[i].remove()
+                            }
+                            Home()
+
+                               
+
+                            
+                        }
+                    })
+                }
+                body_div.appendChild(Login_button)
+                
+                password_div.onclick = function(event){
+                    if(field == "username"){
+                        password_div.className = "auth small_auth active"
+                        username_div.className = "auth small_auth inactive username"
+                        input.value = password
+                        input.placeholder = "Password"
+                        field = "password"
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "pointer"
+                        }
+                        username_div.onclick = password_div.onclick
+                        password_div.style.cursor = "default"
+                        password_div.onclick = null
+
+
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "default"
+                        }
+                    }
+                    else if(field == "password"){
+                        username_div.className = "auth small_auth active"
+                        password_div.className = "auth small_auth inactive password"
+                        field = "username"
+                        input.placeholder = "Username"
+                        input.value = username
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "pointer"
+                        }
+                        username_div.style.cursor = "default"
+                        password_div.onclick = username_div.onclick
+                        username_div.onclick = null
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "default"
+                        }
+
+
+                    }
+                }
+               
+                oval_div.appendChild(password_div)
+               
+            }
+            function Login(){
+                window.history.pushState({}, "", "/website/login");
+
+                
+                let divs = document.querySelectorAll("div")
+                for(let i = 0; i < divs.length; i++){
+                    if(divs[i] != body_div){
+                        divs[i].remove()
+
+
+                    }
+                }
+                const div = document.createElement("div")
+                div.className = "auth background_div"
+               
+                let field = "username"
+
+
+                let username = ""
+                let password = ""
+               
+               
+               
+                body_div.appendChild(div)
+                const input = document.createElement("input")
+                input.className = "auth field_input username"
+                if(field == "username"){
+                    input.placeholder = "Username"
+                }
+                else{
+                    input.placeholder = "Password"
+                }
+                const dont_haveanaccount = document.createElement("div")
+                dont_haveanaccount.innerHTML = `Dont have an account <a id="url">Register here</a>`
+               
+
+
+               
+                dont_haveanaccount.className = "auth div"
+                body_div.appendChild(dont_haveanaccount)
+                const url = document.getElementById("url")
+               
+                url.onclick = function(event){
+                    event.preventDefault()
+                    Register()
+                }
+
+
+                input.value = username
+                let default_border = input.style.border
+                input.onfocus = function(event){
+                    input.style.border =  "3px solid blue"
+                }
+                input.oninput = function(event){
+                    if(field == "username"){
+                        username = input.value
+                   
+                    }
+                    if(field == "password"){
+                        password = input.value
+                    }
+                }
+                input.onblur = function(event){
+                    input.style.border = default_border;
+                }
+           
+                body_div.appendChild(input)
+                const oval_div = document.createElement("div")
+                oval_div.className = "auth oval_auth"
+                
+                document.body.appendChild(oval_div)
+                const username_div = document.createElement("div")
+                username_div.className = "auth small_auth active"
+                username_div.textContent = "Username"
+                username_div.onclick = ""
+               
+               
+                username_div.onmouseover = function(event){
+                    username_div.style.cursor = "default"
+                }
+               
+           
+
+
+           
+                oval_div.appendChild(username_div)
+                const password_div = document.createElement("div")
+                password_div.style.left = "0px"
+                password_div.textContent = "Password"
+                password_div.className = "auth small_auth inactive password"
+               
+                password_div.onmouseover = function(event){
+                    password_div.style.cursor = "pointer"
+                }
+                password_div.style.margin = "auto"
+                const Login_button = document.createElement("button")
+                Login_button.textContent = "Login"
+                Login_button.onmouseover = function(event){
+                    Login_button.style.cursor = "pointer"
+                }
+                Login_button.className = "auth login"
+                Login_button.onclick = function(){
+                    fetch("/login", {method: "POST", headers : {"Content-type":"application/json"}, body : JSON.stringify({username:username, password:password})})
+                    .then(response => response.json())
+                    .then(function(data){
+                        
+                        if(data.error){
+                            let errors = document.querySelectorAll(".auth.error")
+                            
+                            for(let i = 0; i < errors.length; i++){
+                                errors[i].remove()
+                            }
+                            const error = document.createElement("div")
+                            error.className = "auth error"
+
+                            error.innerHTML = `${data.error} + <button><svg id="button" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="red">
+  <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/>
+</svg></button>`
+
+                            body_div.appendChild(error)
+                            const button = document.getElementById("button")
+                            button.onmouseover = function(event){
+                                button.style.cursor = "pointer"
+                            }
+
+                            button.onclick = function(event){
+                                error.remove()
+                            }
+                        }
+                        else{
+                            localStorage.setItem("access_token", data.access_token)
+                            let divs = document.querySelectorAll("div")
+                            for(let i = 0; i < divs.length; i++){
+                                
+                                
+                                divs[i].remove()
+
+
+                                
+
+
+                            }
+                            Home()
+                        }
+                    })
+                }
+                body_div.appendChild(Login_button)
+                password_div.onclick = function(event){
+                    if(field == "username"){
+                        password_div.className = "auth small_auth active"
+                        username_div.className = "auth small_auth inactive username"
+                        input.value = password
+                        input.placeholder = "Password"
+                        field = "password"
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "pointer"
+                        }
+                        username_div.onclick = password_div.onclick
+                        password_div.style.cursor = "default"
+                        password_div.onclick = null
+
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "default"
+                        }
+                    }
+                    else if(field == "password"){
+                        username_div.className = "auth small_auth active"
+                        password_div.className = "auth small_auth inactive password"
+                        field = "username"
+                        input.placeholder = "Username"
+                        input.value = username
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "pointer"
+                        }
+                        password_div.onclick = username_div.onclick
+                        username_div.style.cursor = "default"
+                        username_div.onclick = null
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "default"
+                        }
+
+
+                    }
+                }
+               
+                oval_div.appendChild(password_div)
+               
+            }
+
+            async function Search(){
+                let docs = ""
+                
+                let queries = new URLSearchParams(window.location.search)
+                let query = queries.get("q")
+                let search_input = query
+                await Home(search_input)
+                window.history.pushState({}, "", `/website/search?q=${query}`)
+                
+                
+                
+               
+                
+                
+                
+                fetch(`/website/get?q=${query}`, {headers: {"Authorization": `Bearer ${localStorage.getItem("access_token")}`}})
+                .then(response => response.json())
+                .then(function(docs_query){
+                    if(docs_query.detail == "Token expired"){
+                        
+                        Login()
+                        return;
+                    }
+                    let docs = document.querySelectorAll(".main.doc")
+                    for(let i = 0; i < docs.length; i++){
+                        if(docs[i] != body_div){
+                            docs[i].remove()
+                        }
+                    }
+                    
+                
+                
+                   
+                    
+
+                    const main_docs = document.querySelector(".main.docs")
+                    
+
+
+                    for(let i = 0; i < docs_query.length; i++){
+                        const doc = document.createElement("div")
+                        doc.className = "main doc"
+                        
+                        doc.innerHTML = docs_query[i].content
+                        doc.onclick = function(event){
+                            window.history.pushState({}, "", `/website?doc_id=${docs_query[i].doc_id}`)
+                            Doc()
+                        }
+                        
+                        main_docs.appendChild(doc)
+                        
+                        const title_div = document.createElement("div")
+                        title_div.className = "main title"
+                        
+                        title_div.textContent = docs_query[i].title
+                        doc.appendChild(title_div)
+
+
+                        
+                    }
+
+                })
+                
+            }
+
+            function Doc(){
+                if(ws){
+                    ws.close()
+                }
+            
+                
+                const params = new URLSearchParams(window.location.search)
+                let doc_id = params.get("doc_id")
+                let divs = document.querySelectorAll("div")
+                for(let i = 0; i < divs.length; i++){
+                    if(divs[i] != body_div){
+                        divs[i].remove()
+                    }
+                }
+
+                
+
+                fetch("/doc/get", {method : "POST", headers : {"Authorization": `Bearer ${localStorage.getItem("access_token")}`, "Content-type" : "application/json"}, body : JSON.stringify({doc_id : doc_id})})
+                
+                
+                .then(response => response.json())
+                .then(function(data){
+                    alert(JSON.stringify(data))
+                    if(data.detail == "Token expired"){
+                        
+                        Login()
+                        return;
+                        
+                        
+                        
+                    }
+
+                    function getCharetXY(){
+                        const sel = window.getSelection()
+                        if(!sel.rangeCount){
+                            return null;
+                        }
+                        const range = sel.getRangeAt(0).cloneRange();
+                        const marker = document.createElement("span")
+                        marker.textContent = "\u200b"
+                        marker.style.width = "0px"
+                        marker.style.lineHeight = "0px"
+                        marker.style.padding = "0px"
+                        marker.style.margin = "0";
+                        marker.style.userSelect = "none";
+                        const parent = marker.parentNode;
+                        range.insertNode(marker);
+                        const rect = marker.getBoundingClientRect();
+                        let pos = {x : rect.left, y: rect.top}
+                        marker.remove()
+                        sel.removeAllRanges()
+                        sel.removeAllRanges()
+                        return pos
+                        
+
+
+                    }
+
+                    function setCharetXY(x, y){
+                        const sel = window.getSelection()
+                        if(document.caretRangeFromPoint){
+                            const range = document.caretRangeFromPoint(x, y);
+
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+
+                            return true
+                        }
+                        return false
+                    }
+
+                   
+                    const main_div = document.createElement("div")
+                    document.body.appendChild(main_div)
+                    ws = new WebSocket("/ws")
+                    ws.onmessage = function(event){
+                        let data = JSON.parse(event.data)
+                        let content = data.content
+                        let div = document.querySelector(".main.edit_doc")
+                        let pos = getCharetXY()
+                        if(data.doc_id == doc_id){
+                            div.innerHTML = content
+                            setCharetXY(pos.x, pos.y)
+                        }
+                    
+                    
+                    
+                        
+                    
+                    }
+                    
+                    const doc_div = document.createElement("div")
+                    doc_div.className = "main edit_doc"
+                    doc_div.contentEditable = true
+                    doc_div.innerHTML = data.content
+                    doc_div.oninput = function(event){
+                        ws.send(JSON.stringify({doc_id : parseInt(doc_id), content : doc_div.innerHTML}))
+                    }
+                    doc_div.scrollIntoView()
+                    main_div.appendChild(doc_div)
+                    const input = document.createElement("input")
+                    input.type = "file"
+                    input.className = "main input_file"
+                    input.oninput = function(event){
+                            file = input.files[0]
+                            let reader = new FileReader()
+                            reader.onload = function(event){
+                                const dataURL = reader.result;
+                                const img = document.createElement("img")
+                                img.src = dataURL;
+                                img.style.margin = "0px"
+                                img.style.width = "100px"
+                                img.style.height = "100px"
+                                img.style.display =  "block"
+                                doc_div.appendChild(img)
+                                ws.send(JSON.stringify({doc_id : doc_id, content : doc_div.innerHTML}))
+                                
+                            }
+                            reader.readAsDataURL(file);
+                    }
+                    main_div.appendChild(input)
+                    
+                    const background_div = document.createElement("div")
+                    background_div.className = "main background"
+                    main_div.appendChild(background_div)
+                    
+
+                    const Share_button = document.createElement("div")
+                    Share_button.className = "main button_share"
+                    Share_button.textContent = "Share"
+                    Share_button.onclick = function(event){
+                        const overlay = document.createElement("div")
+                        overlay.className = "main overlay"
+                        overlay.style.position = "fixed"
+                        document.body.appendChild(overlay)
+                        const overlay_div = document.createElement("div")
+                        overlay_div.classList.add("main", "overlay_div", "initial")
+                        overlay_div.style.position = "fixed"
+                        overlay_div.style.zIndex = "2"
+                       
+                        
+                        main_div.appendChild(overlay_div)
+                        requestAnimationFrame(() => {
+                            overlay_div.classList.add("main", "overlay_div", "final")
+                        })
+                        const input = document.createElement("input")
+                        input.className = "main overlay_input"
+                        input.placeholder = "Type the Username"
+                        
+                        input.style.zIndex = "2"
+                        overlay_div.appendChild(input)
+                        const Share = document.createElement("button")
+                        Share.className = "main overlay_button"
+                        Share.textContent = "Share"
+                        Share.style.zIndex = "2"
+                        Share.onmouseenter = function(event){
+                            Share.className = "main overlay_button hover"
+                            Share.style.cursor = "pointer"
+                        }
+                        Share.onmouseleave = function(event){
+                            Share.className = "main overlay_button"
+                            Share.style.cursor = "pointer"
+                        }
+                        Share.onclick = function(event){
+                            fetch("/share", {method : "POST", headers : {"Authorization" : `Bearer ${localStorage.getItem("access_token")}`, "Content-type" : "application/json"}, body : JSON.stringify({username : input.value, doc_id :parseInt(doc_id) })})
+                            .then(response => response.json())
+                            .then(function(data){
+                                if(data.detail == "Token expired"){
+                                    
+                                    Login()
+                                    return;
+                                }
+                               
+                                overlay.remove()
+                                overlay_div.remove()
+                            })
+                        }
+                        overlay_div.appendChild(Share)
+
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    }
+                    main_div.appendChild(Share_button)
+                    
+                    
+                    
+
+                })
+            }
+
+            function Home(query=""){
+                let prev_docs = document.querySelectorAll("div")
+                
+               
+                for(let i = 0; i < prev_docs.length; i++){
+                    if(prev_docs[i] != body_div){
+                        prev_docs[i].remove()
+                    }
+                }
+
+
+                window.history.pushState({}, "", "/website/home")
+                
+                const main_div = document.createElement("div")
+                document.body.appendChild(main_div)
+                const main_docs = document.createElement("div")
+                main_docs.className = "main docs"
+                main_div.appendChild(main_docs)
+
+                fetch("/get_docs", {headers : {"Authorization" : `Bearer ${localStorage.getItem("access_token")}`}})
+                .then(response => response.json())
+                .then(function(docs){
+                    
+                    
+
+                    
+                    if(docs.detail){
+                        
+                        Login()
+                        return;
+                    }
+                    
+                    for(let i = 0; i < docs.length; i++){
+                        
+                        const doc = document.createElement("div")
+                        
+                        doc.className = "main doc"
+                        doc.onclick = function(event){
+                            window.history.pushState({}, "", `/website?doc_id=${docs[i].doc_id}`)
+                            Doc()
+                            return;
+                            
+                        }
+                        
+                        doc.innerHTML = docs[i].content
+                        
+                        main_docs.appendChild(doc)
+                        const title_div = document.createElement("div")
+                        title_div.className = "main title"
+                        title_div.textContent = docs[i].title
+                        
+                    
+                        doc.appendChild(title_div)
+                        
+                    }
+                })
+                
+                const nav = document.createElement("div")
+                nav.className = "main top"
+                main_div.appendChild(nav)
+                const input = document.createElement("input")
+               
+                input.value = query
+                input.className = "main search"
+                input.placeholder = "Search documents"
+                input.addEventListener("keydown", function(event){
+                    if(event.key == "Enter"){
+                        event.preventDefault()
+                        
+                        window.history.pushState({}, "", `/website/search?q=${input.value}`)
+                        Search()
+                    }
+                })
+                main_div.appendChild(input)
+                const add_doc = document.createElement("div")
+                add_doc.className = "main add_doc"
+                add_doc.style.zIndex = "1"
+                add_doc.onmouseover = function(event){
+               
+                    add_doc.style.cursor = "pointer"
+                }
+
+                add_doc.onclick = function(event){
+                    const overlay = document.createElement("div")
+                    overlay.className = "main overlay"
+                    
+                    overlay.style.width = document.body.style.width
+                    overlay.style.height = document.body.style.height
+                    overlay.style.position = "fixed"
+                    document.body.appendChild(overlay)
+
+                    const information = document.createElement("div")
+                    information.className = "main overlay_div information"
+                    information.textContent = "Change the title of your document"
+                    information.style.zIndex = "2"
+                    document.body.appendChild(information)
+
+                    const title_div = document.createElement("div")
+                    title_div.classList.add("main", "overlay_div", "initial");
+                    title_div.style.position = "fixed"
+                    document.body.appendChild(title_div)
+                    requestAnimationFrame(() =>{
+                        title_div.classList.replace("initial", "final");
+                    })
+                    const input = document.createElement("input")
+                    input.className = "main overlay_input"
+                    input.placeholder = "Title"
+                    input.style.zIndex = "2"
+                    title_div.appendChild(input)
+                    title_div.appendChild(information)
+                    const create_title = document.createElement("button")
+                    create_title.className = "main overlay_button"
+                    create_title.textContent = "Create"
+                    create_title.style.zIndex = "2"
+                    title_div.appendChild(create_title)
+
+                    create_title.onmouseover = function(event){
+                        create_title.className = "main overlay_button hover"
+                        create_title.style.cursor = "pointer"
+                    }
+                    create_title.onmouseout = function(event){
+                        create_title.className = "main overlay_button"
+
+                    }
+                    create_title.onclick = function(event){
+                        
+                        
+                        
+                        
+                        fetch("/create", {method:"POST", headers: {"Authorization": `Bearer ${localStorage.getItem("access_token")}`, "Content-type" : "application/json"}, body : JSON.stringify({title : input.value})})
+                        .then(response => response.json())
+                        .then(function(data){
+                            
+                            if(data.detail == "Token expired"){
+                               
+                               
+                                
+                                window.history.pushState({}, "", "/website/login")
+                                Login()
+                            }
+                        
+
+                            title_div.classList.replace("final", "initial");
+
+
+                            overlay.remove()
+                            
+                            create_title.remove()
+                            title_div.remove()
+                            
+                           
+                            
+                            
+                            input.remove()
+                            Home()
+                            return;
+                            
+                            
+                        })
+                        
+                        
+
+                    }
+                    input.focus()
+
+                }
+                const svg = document.createElement("div")
+                svg.style.position = "absolute"
+                svg.style.top = "30%"
+                svg.style.left = "33%"
+                
+                svg.innerHTML = `
+<svg width="60" height="90" viewBox="0 0 20 18" fill="none"
+     xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 5v14M5 12h14"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"/>
+</svg>
+`;
+
+
+                main_div.appendChild(add_doc)
+                add_doc.appendChild(svg)
+
+                
+                
+
+                
+
+            }
+           
+            function router(){
+                const  path = window.location.pathname
+                if(path == "/website/register"){
+                    Register(false)
+                }
+                else if(path == "/website/login" || !localStorage.getItem("access_token")){
+                    Login(false)
+                }
+                else if(path == "/website/home"){
+                    Home("", false)
+                }
+                else if(path == "/website/search"){
+                    
+                    Search(false)
+                }
+                else if(path == "/website"){
+                    Doc(false)
+                }
+            }
+            window.onpopstate = router;
+            router()
+        </script>
+    </body>
+</html>
