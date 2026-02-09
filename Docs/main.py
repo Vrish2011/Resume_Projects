@@ -136,11 +136,12 @@ async def login(request: Request, db=Depends(get_db)):
         username = LoginData.get("username")
         password = LoginData.get("password")
         user = authenticate(username, password, db)
-        print(user)
-        request.session["user_id"] = user["user_id"]
+        
+        
 
         if(user["error"]):
             return ({"error": user["error"]})
+        request.session["user_id"] = user["user_id"]
         
         return (user)
 
