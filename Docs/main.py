@@ -260,8 +260,17 @@ async def get(request: Request, db=Depends(get_db), verify=Depends(Verify_token)
     if(request.method == "POST"):
         data = await request.json()
         doc_id = data.get("doc_id")
+<<<<<<< HEAD
         doc = db.execute("SELECT * FROM docs WHERE doc_id = ?", (doc_id,)).fetchone()
         return JSONResponse({"doc_id" : doc["doc_id"], "title": doc["title"], "content": doc["content"]})
+=======
+        is_edit = db.execute("SELECT * FROM editors WHERE user_id = ? AND doc_id = ?", (request.session.get("user_id"), doc_id))
+        if(is_edit):
+            doc = db.execute("SELECT * FROM docs WHERE doc_id = ?", (doc_id,)).fetchone()
+            return JSONResponse({"doc_id" : doc["doc_id"], "title": doc["title"], "content": doc["content"]})
+        
+        
+>>>>>>> bcbaa4c (Done)
 
 
 @app.api_route("/website", methods=["GET", "POST"], response_class=HTMLResponse)
