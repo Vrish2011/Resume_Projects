@@ -1,0 +1,776 @@
+<!doctype>
+<html lang="en">
+    <head>
+        <style>
+
+
+            body{
+                min-height: 2000px;
+               
+            }
+           
+            .auth.background_div {
+                position:absolute;
+                left: 50%;
+                width: 50%;
+                background-color: rgb(0,0,255);
+                height: 100%;
+            }
+
+            .auth.error{
+                position: absolute;
+                display:flex;
+                justify-content:flex-start;
+                width: 200px;
+                height:25px;
+                align-items:center;
+                background-color: rgb(255, 210, 210);
+                border-radius:10%;
+                padding: 20px 10px;
+                top: 60%;
+                left: 10%;
+                color: rgb(255,0,0)
+            }
+            .auth.error button{
+                margin-right: auto;
+                background-color:rgb(255, 210, 210);
+                border:none;
+            }
+            .auth.error svg{
+                opacity: 1;
+            }
+
+        
+
+            .auth.field_input.username{
+                position: absolute;
+                top: 50%;
+                left: 7.5%;
+                height: 50px;
+                width: 400px;
+                line-height: 50px;
+                padding: 0px 10px;
+                font-size: 20px;
+                outline: none;
+               
+
+
+            }
+
+
+           
+
+
+            .auth.oval_auth{
+                position: absolute;
+                left: 5%;
+                top: 20%;
+                width: 450px;
+                background-color: rgb(200,200, 200);
+                padding: 10px 10px;
+                height: 50px;
+                border-radius: 999px;
+                display: flex;
+               
+               
+            }
+            .auth.small_auth {
+                position: relative;
+                z-index: 2;
+
+
+                transition:background-color 0.3s ease,transform 0.3s ease,justify-content 0.3s ease;
+            }
+
+            a {
+                color:rgb(0, 0, 255);
+            }
+   
+       
+       
+       
+
+
+            .auth.small_auth.inactive.password{
+                position: relative;
+                display:flex;
+                justify-content:flex-end;
+                align-items:center;
+                color: rgb(125,125, 125);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-weight: 500;
+                margin-right:auto;
+                position: relative;
+                left: 50px;               
+               
+            }
+
+
+            .auth.login {
+                display:flex;
+                justify-content:center;
+                align-items: center;
+                width: 300px;
+                height: 50px;
+                position: absolute;
+                top: 75%;
+                left: 7.5%;
+                border-radius: 999px;
+                background-color: rgb(0, 0, 255);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-weight: 100;  
+                color: white;
+                text-align: left;
+                padding-left: 20px;
+                font-size: 20px;
+                transition: ease 0.4s;
+                outline:none;
+               
+
+
+            }
+            .auth.login:hover{
+                background-color: rgb(0, 89, 255)
+
+
+            }
+
+
+            .auth.small_auth.inactive.username{
+                position: relative;
+                display:flex;
+               
+                align-items:center;
+                margin: auto;
+                color: rgb(125,125, 125);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-weight: 500;  
+               
+               
+            }
+
+
+            .auth.div{
+                position: absolute;
+                left: 7.5%;
+                top: 90%;
+            }
+            .auth.div a {
+                text-decoration: underline
+            }
+           
+
+
+
+
+            .auth.small_auth.active{
+               
+                width: 200px;
+                height: 10px;
+                padding: 20px 15px ;
+                display: flex;
+                justify-content: center; /* horizontal */
+                align-items: center;
+                font-family: "Segoe UI", Arial, sans-serif;
+                color: white;
+                font-weight: 500;
+
+   
+                background-color: rgb(0,0,255);
+                border-radius: 999px;
+
+
+
+
+            }
+
+            .main.background{
+                background-color: rgb(230,230, 230);
+                position: fixed;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                height: 100%;
+                
+            }
+
+            .main.add_post{
+                background-color: white;
+                border-radius: 20px;
+                width:450px;
+                height: 150px;
+                position:absolute;
+                top: 20%;
+                left:30%;
+                
+            }
+
+            .main.add_input{
+                border-radius: 999px;
+              
+                width: 300px;
+                height: 50px;
+                background-color:rgb(200,200, 200);
+                padding-left: 30px;
+                font-size: 16px;
+                outline:none;
+                border:none;
+               
+                position: absolute;
+                top: 25%;
+                left: 15%;
+
+            }
+
+            .main.overlay{
+                position: fixed;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                height: 100%;
+                background-color: grey;
+                opacity: 0.6;
+                z-index:1;
+            }
+
+            .main.overlay_div{
+                z-index:2;
+                border-radius:50px;
+                background-color:white;
+                width: 400px;
+                height: 400px;
+                position: absolute;
+                transform: translate(-50%, -50%);
+                top: 50%;
+                left: 50%;
+                padding: 80px 20px;
+                
+        
+            }
+
+            .main.title_div{
+                font-size: 60px;
+                font-weight: 500;
+                z-index: 5;
+                width: 300px;
+
+                height: 50px;
+                background-color:  white;
+                position: relative;
+                left:1000px;
+                
+                
+                top: 180px;
+                position: fixed;
+                left: 40%;
+
+            }
+
+        </style>
+                    
+
+    </head>
+
+
+    <body>
+
+
+        <script>
+
+            const body_div = document.createElement("div")
+            document.body.appendChild(body_div)
+
+            if(!localStorage.getItem("access_token")){
+                Login()
+            }
+            
+            
+            function Register(){
+                window.history.pushState({}, "", "/main/register");
+
+
+  
+
+                
+                let divs = document.querySelectorAll("div")
+                
+                for(let i = 0; i < divs.length; i++){
+                    if(divs[i] != body_div){
+                        divs[i].remove()
+
+
+                    }
+                }
+
+
+               
+                const div = document.createElement("div")
+                div.className = "auth background_div"
+               
+                let field = "username"
+
+
+                let username = ""
+                let password = ""
+               
+               
+               
+                body_div.appendChild(div)
+                const input = document.createElement("input")
+                input.className = "auth field_input username"
+                if(field == "username"){
+                    input.placeholder = "Username"
+                }
+                else{
+                    input.placeholder = "Password"
+                }
+                const dont_haveanaccount = document.createElement("div")
+                dont_haveanaccount.innerHTML = `Already have an account <a id="url">Login here</a>`
+                dont_haveanaccount.onclick = function(event){
+                    
+                    
+                    if(event.target.id == "url"){
+                        
+
+                        event.preventDefault()
+                        Login()
+                    }
+                }
+                dont_haveanaccount.className = "auth div"
+                body_div.appendChild(dont_haveanaccount)
+
+
+                input.value = username
+                let default_border = input.style.border
+                input.onfocus = function(event){
+                    input.style.border =  "3px solid blue"
+                }
+                input.oninput = function(event){
+                    if(field == "username"){
+                        username = input.value
+                   
+                    }
+                    if(field == "password"){
+                        password = input.value
+                    }
+                }
+                input.onblur = function(event){
+                    input.style.border = default_border;
+                }
+           
+                body_div.appendChild(input)
+                const oval_div = document.createElement("div")
+                oval_div.className = "auth oval_auth"
+                
+                document.body.appendChild(oval_div)
+                const username_div = document.createElement("div")
+                username_div.className = "auth small_auth active"
+                username_div.textContent = "Username"
+                username_div.onclick = ""
+               
+               
+                username_div.onmouseover = function(event){
+                    username_div.style.cursor = "default"
+                }
+               
+           
+
+
+           
+                oval_div.appendChild(username_div)
+                const password_div = document.createElement("div")
+                password_div.textContent = "Password"
+                password_div.className = "auth small_auth inactive password"
+            
+               
+                password_div.onmouseover = function(event){
+                    password_div.style.cursor = "pointer"
+                }
+                
+                const Login_button = document.createElement("button")
+                Login_button.textContent = "Register"
+                Login_button.onmouseover = function(event){
+                    Login_button.style.cursor = "pointer"
+                }
+                Login_button.className = "auth login"
+                Login_button.onclick = function(){
+                    fetch("/auth/register", {method: "POST", headers : {"Content-type":"application/json"}, body : JSON.stringify({username:username, password:password})})
+                    .then(response => response.json())
+                    .then(function(data){
+                        localStorage.setItem("access_token", data.access_token)
+                        if(data.error){
+                            let errors = document.querySelectorAll(".auth.error")
+                            
+                            for(let i = 0; i < errors.length; i++){
+                                errors[i].remove()
+                            }
+                            const error = document.createElement("div")
+                            error.className = "auth error"
+
+                            error.innerHTML = `${data.error} + <button><svg id="button" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="red">
+  <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/>
+</svg></button>`
+
+                            body_div.appendChild(error)
+                            const button = document.getElementById("button")
+                            button.onmouseover = function(event){
+                                button.style.cursor = "pointer"
+                            }
+
+                            button.onclick = function(event){
+                                error.remove()
+                            }
+                        }
+
+                        else{
+                            localStorage.setItem("access_token", data.access_token)
+                            
+                               
+                            let divs = document.querySelectorAll("div")
+                            for(let i =0; i < divs.length; i++){
+                                divs[i].remove()
+                            }
+                            Home()
+
+                               
+
+                            
+                        }
+                    })
+                }
+                body_div.appendChild(Login_button)
+                
+                password_div.onclick = function(event){
+                    if(field == "username"){
+                        password_div.className = "auth small_auth active"
+                        username_div.className = "auth small_auth inactive username"
+                        input.value = password
+                        input.placeholder = "Password"
+                        field = "password"
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "pointer"
+                        }
+                        username_div.onclick = password_div.onclick
+                        password_div.style.cursor = "default"
+                        password_div.onclick = null
+
+
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "default"
+                        }
+                    }
+                    else if(field == "password"){
+                        username_div.className = "auth small_auth active"
+                        password_div.className = "auth small_auth inactive password"
+                        field = "username"
+                        input.placeholder = "Username"
+                        input.value = username
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "pointer"
+                        }
+                        username_div.style.cursor = "default"
+                        password_div.onclick = username_div.onclick
+                        username_div.onclick = null
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "default"
+                        }
+
+
+                    }
+                }
+               
+                oval_div.appendChild(password_div)
+               
+            }
+            function Login(){
+                window.history.pushState({}, "", "/main/login");
+
+                
+                let divs = document.querySelectorAll("div")
+                for(let i = 0; i < divs.length; i++){
+                    if(divs[i] != body_div){
+                        divs[i].remove()
+
+
+                    }
+                }
+                const div = document.createElement("div")
+                div.className = "auth background_div"
+               
+                let field = "username"
+
+
+                let username = ""
+                let password = ""
+               
+               
+               
+                document.body.appendChild(div)
+                const input = document.createElement("input")
+                input.className = "auth field_input username"
+                if(field == "username"){
+                    input.placeholder = "Username"
+                }
+                else{
+                    input.placeholder = "Password"
+                }
+                const dont_haveanaccount = document.createElement("div")
+                dont_haveanaccount.innerHTML = `Dont have an account <a id="url">Register here</a>`
+               
+
+
+               
+                dont_haveanaccount.className = "auth div"
+                body_div.appendChild(dont_haveanaccount)
+                const url = document.getElementById("url")
+               
+                url.onclick = function(event){
+                    event.preventDefault()
+                    Register()
+                }
+
+
+                input.value = username
+                let default_border = input.style.border
+                input.onfocus = function(event){
+                    input.style.border =  "3px solid blue"
+                }
+                input.oninput = function(event){
+                    if(field == "username"){
+                        username = input.value
+                   
+                    }
+                    if(field == "password"){
+                        password = input.value
+                    }
+                }
+                input.onblur = function(event){
+                    input.style.border = default_border;
+                }
+           
+                body_div.appendChild(input)
+                const oval_div = document.createElement("div")
+                oval_div.className = "auth oval_auth"
+                
+                document.body.appendChild(oval_div)
+                const username_div = document.createElement("div")
+                username_div.className = "auth small_auth active"
+                username_div.textContent = "Username"
+                username_div.onclick = ""
+               
+               
+                username_div.onmouseover = function(event){
+                    username_div.style.cursor = "default"
+                }
+               
+           
+
+
+           
+                oval_div.appendChild(username_div)
+                const password_div = document.createElement("div")
+                password_div.style.left = "0px"
+                password_div.textContent = "Password"
+                password_div.className = "auth small_auth inactive password"
+               
+                password_div.onmouseover = function(event){
+                    password_div.style.cursor = "pointer"
+                }
+                password_div.style.margin = "auto"
+                const Login_button = document.createElement("button")
+                Login_button.textContent = "Login"
+                Login_button.onmouseover = function(event){
+                    Login_button.style.cursor = "pointer"
+                }
+                Login_button.className = "auth login"
+                Login_button.onclick = function(){
+                    fetch("/auth/login", {method: "POST", headers : {"Content-type":"application/json"}, body : JSON.stringify({username:username, password:password})})
+                    .then(response => response.json())
+                    .then(function(data){
+                        localStorage.setItem("access_token", data.access_token)
+                        
+                        if(data.error){
+                            let errors = document.querySelectorAll(".auth.error")
+                            
+                            for(let i = 0; i < errors.length; i++){
+                                errors[i].remove()
+                            }
+                            const error = document.createElement("div")
+                            error.className = "auth error"
+
+                            error.innerHTML = `${data.error} + <button><svg id="button" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="red">
+  <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/>
+</svg></button>`
+
+                            body_div.appendChild(error)
+                            const button = document.getElementById("button")
+                            button.onmouseover = function(event){
+                                button.style.cursor = "pointer"
+                            }
+
+                            button.onclick = function(event){
+                                error.remove()
+                            }
+                        }
+                        else{
+                            localStorage.setItem("access_token", data.access_token)
+                            let divs = document.querySelectorAll("div")
+                            for(let i = 0; i < divs.length; i++){
+                                
+                                
+                                divs[i].remove()
+
+
+                                
+
+
+                            }
+                            Home()
+                        }
+                    })
+                }
+                body_div.appendChild(Login_button)
+                password_div.onclick = function(event){
+                    if(field == "username"){
+                        password_div.className = "auth small_auth active"
+                        username_div.className = "auth small_auth inactive username"
+                        input.value = password
+                        input.placeholder = "Password"
+                        field = "password"
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "pointer"
+                        }
+                        username_div.onclick = password_div.onclick
+                        password_div.style.cursor = "default"
+                        password_div.onclick = null
+
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "default"
+                        }
+                    }
+                    else if(field == "password"){
+                        username_div.className = "auth small_auth active"
+                        password_div.className = "auth small_auth inactive password"
+                        field = "username"
+                        input.placeholder = "Username"
+                        input.value = username
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "pointer"
+                        }
+                        password_div.onclick = username_div.onclick
+                        username_div.style.cursor = "default"
+                        username_div.onclick = null
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "default"
+                        }
+
+
+                    }
+                }
+               
+                oval_div.appendChild(password_div)
+               
+            }
+           
+
+            function Home(){
+                
+                let divs = document.querySelectorAll("div")
+                for(let i = 0; i < divs.length; i++){
+                    divs[i].remove()
+                }
+                window.history.pushState({}, "", "/main/Home")
+              
+                const main_div = document.createElement("div")
+                main_div.className = "main background"
+                document.body.appendChild(main_div)
+
+                const add_Post = document.createElement("div")
+                add_Post.className = "main add_post"
+                
+                main_div.appendChild(add_Post)
+
+                const add_input = document.createElement("input")
+                add_input.className = "main add_input"
+                add_input.placeholder = "Create a post"
+                add_input.onfocus = function(event){
+                    const overlay = document.createElement("div")
+                    overlay.className = "main overlay"
+                    main_div.appendChild(overlay)
+
+                    const overlay_div = document.createElement("textarea")
+                    overlay_div.className = "main overlay_div"
+                    overlay_div.contentEditable = true
+                    const title_div = document.createElement("div")
+                    title_div.innerHTML = "Create a post"
+                    title_div.containsEditable= false
+                    title_div.style.position = "relative"
+                 
+                    title_div.className = "main title_div"
+                    
+                    main_div.appendChild(title_div)
+                    
+                
+                    title_div.style.overflowX = "hidden"
+                    title_div.style.fontSize = "40px"
+                   
+                    
+                    main_div.appendChild(overlay_div)
+                    
+                    overlay_div.focus()
+
+                    const add_button = document.createElement("div")
+                    add_button.className = "main add_button"
+
+                    document.addEventListener("keydown", function(event){
+                        if(event.key == "Enter"){
+                            event.preventDefault()
+                            fetch("/main/add_post", {method:"POST", headers: {"Authorization" : localStorage.getItem("access_token"), "Content-type": "application/json"}, body : JSON.stringify({postContent : overlay_div.value })})
+                            .then(response => response.json())
+                            .then(function(data){
+                                if(data.error){
+                                    Login()
+                                }
+                            })
+                        }
+                    })
+            
+                }
+                
+                add_Post.appendChild(add_input)
+
+
+
+            
+
+            }
+
+            function router(){
+                const path = window.location.pathname
+                if(path == "/main/login"){
+                    Login(false)
+                }
+
+                if(path == "/main/register"){
+                    Register(false)
+                }
+
+                if(path == "/main/Home"){
+                    Home(false)
+                }
+
+
+                
+            }
+            window.onpopstate = router
+
+            router()
+            
+        </script>
+    </body>
+    
+
+
+
+
+</html>
