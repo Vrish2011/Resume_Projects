@@ -1,0 +1,1941 @@
+<!doctype>
+<html lang="en">
+    <head>
+        <style>
+
+
+            body{
+                overflow: scroll;
+                height: 100vh
+            }
+           
+            .auth.background_div {
+                position:absolute;
+                left: 50%;
+                width: 50%;
+                background-color: rgb(0,0,255);
+                height: 100%;
+            }
+
+            .auth.error{
+                position: absolute;
+                display:flex;
+                justify-content:flex-start;
+                width: 200px;
+                height:25px;
+                align-items:center;
+                background-color: rgb(255, 210, 210);
+                border-radius:10%;
+                padding: 20px 10px;
+                top: 60%;
+                left: 10%;
+                color: rgb(255,0,0)
+            }
+            .auth.error button{
+                margin-right: auto;
+                background-color:rgb(255, 210, 210);
+                border:none;
+            }
+            .auth.error svg{
+                opacity: 1;
+            }
+
+        
+
+            .auth.field_input.username{
+                position: absolute;
+                top: 50%;
+                left: 7.5%;
+                height: 50px;
+                width: 400px;
+                line-height: 50px;
+                padding: 0px 10px;
+                font-size: 20px;
+                outline: none;
+               
+
+
+            }
+
+
+           
+
+
+            .auth.oval_auth{
+                position: absolute;
+                left: 5%;
+                top: 20%;
+                width: 450px;
+                background-color: rgb(200,200, 200);
+                padding: 10px 10px;
+                height: 50px;
+                border-radius: 999px;
+                display: flex;
+               
+               
+            }
+            .auth.small_auth {
+                position: relative;
+                z-index: 2;
+
+
+                transition:background-color 0.3s ease,transform 0.3s ease,justify-content 0.3s ease;
+            }
+
+            a {
+                color:rgb(0, 0, 255);
+            }
+   
+       
+       
+       
+
+
+            .auth.small_auth.inactive.password{
+                position: relative;
+                display:flex;
+                justify-content:flex-end;
+                align-items:center;
+                color: rgb(125,125, 125);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-weight: 500;
+                margin-right:auto;
+                position: relative;
+                left: 50px;               
+               
+            }
+
+
+            .auth.login {
+                display:flex;
+                justify-content:center;
+                align-items: center;
+                width: 300px;
+                height: 50px;
+                position: absolute;
+                top: 75%;
+                left: 7.5%;
+                border-radius: 999px;
+                background-color: rgb(0, 0, 255);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-weight: 100;  
+                color: white;
+                text-align: left;
+                padding-left: 20px;
+                font-size: 20px;
+                transition: ease 0.4s;
+                outline:none;
+               
+
+
+            }
+            .auth.login:hover{
+                background-color: rgb(0, 89, 255)
+
+
+            }
+
+
+            .auth.small_auth.inactive.username{
+                position: relative;
+                display:flex;
+               
+                align-items:center;
+                margin: auto;
+                color: rgb(125,125, 125);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-weight: 500;  
+               
+               
+            }
+
+
+            .auth.div{
+                position: absolute;
+                left: 7.5%;
+                top: 90%;
+            }
+            .auth.div a {
+                text-decoration: underline
+            }
+           
+
+
+
+
+            .auth.small_auth.active{
+               
+                width: 200px;
+                height: 10px;
+                padding: 20px 15px ;
+                display: flex;
+                justify-content: center; /* horizontal */
+                align-items: center;
+                font-family: "Segoe UI", Arial, sans-serif;
+                color: white;
+                font-weight: 500;
+
+   
+                background-color: rgb(0,0,255);
+                border-radius: 999px;
+
+
+
+
+            }
+
+            .main.background{
+                background-color: rgb(230,230, 230);
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                height: 1000%;
+                
+            }
+
+            .main.add_post{
+                background-color: white;
+                border-radius: 20px;
+                width:450px;
+                height: 150px;
+                position:absolute;
+                top: 5%;
+                left:30%;
+                
+                
+            }
+
+            .main.add_input{
+                border-radius: 999px;
+              
+                width: 300px;
+                height: 50px;
+                background-color:rgb(200,200, 200);
+                padding-left: 30px;
+                font-size: 16px;
+                outline:none;
+                border:none;
+                position: relative;
+                top: 400px;
+                left: 550px;
+               
+                
+               
+            }
+
+            .main.overlay{
+                position: fixed;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                height: 100%;
+                background-color: grey;
+                opacity: 0.6;
+                z-index:1;
+            }
+
+            .main.overlay_div{
+                z-index:2;
+                border-radius:50px;
+                background-color:white;
+                width: 400px;
+                height: 400px;
+                position: absolute;
+                transform: translate(-50%, -50%);
+                top: 55%;
+                left: 45%;
+                padding: 100px 50px;
+                
+                
+        
+            }
+
+            .main.title_div{
+                position: absolute;
+                font-size: 60px;
+                font-weight: 500;
+                z-index: 5;
+                width: 100%;
+
+                height: 50px;
+                background-color:  white;
+                
+                
+                left: 35%;
+                top: 30%;
+                
+
+            }
+
+            .main.add_button{
+                position: absolute;
+                top: 56%;
+                left: 35%;
+            
+                z-index: 7;
+                width: 300px;
+                height: 50px;
+                border-radius: 999px;
+                background-color: rgb(0,0,255);
+                
+               
+                transition: all ease 0.3s;
+                color:white;
+                font-size: 25px;
+            }
+
+            .main.add_button:hover{
+                cursor:pointer;
+                background-color:  rgb(0, 187, 255);
+            }
+
+            
+
+
+            .main.post{
+                position:relative;
+                top: 500px;
+                left: 450px;
+                border-radius: 20px;
+                
+                background-color: white;
+                
+                min-width: 100px;
+                max-width: 450px;
+                min-height: 25px;
+               
+
+                margin-top: 150px;
+                padding: 10px 10px;
+                
+                
+            }
+
+            .main.post pre{
+                overflow : auto;
+            }
+
+            .main.post div {
+                color:rgb(200, 200, 200);
+            }
+
+            .main.nav{
+                background-color: white;
+                display:flex;
+                position: relative;
+                width: 100vw;
+                height: 150px;
+                background-color: black;
+
+            }
+
+            .main.search {
+                position: absolute;
+                left: 15%;
+                top: 50%;
+                width: 350px;
+                padding: 0px 50px;
+                height: 50px;
+                border-radius: 999px;
+            }
+
+            li{
+                transition: 0.3s ease
+            }
+
+            li:hover{
+                color: rgb(255, 221, 0);
+                cursor:pointer
+            }
+
+            .main.profile{
+                position: relative;
+            }
+
+            .main.delete_button{
+                display:flex;
+                align-items:center;
+                justify-content: center;
+                position: absolute;
+                left: 80%;
+                top: 0%;
+                
+                border-radius: 999px;
+                
+                
+                width: 50px;
+                height: 50px;
+                cursor:pointer;
+            }
+            .main.delete_button:hover{
+                background-color: rgb(220, 220, 220);
+                
+            }
+
+            .main.edit_button{
+                display:flex;
+                align-items:center;
+                justify-content: center;
+                position: absolute;
+                left: 70%;
+                top: 0%;
+                
+                border-radius: 999px;
+                background-color: white;
+                
+                
+                width: 50px;
+                height: 50px;
+                
+            }
+
+            .main.edit_button:hover{
+                background-color: rgb(220, 220, 220);
+                cursor:pointer;
+            }
+
+            .main.editing_button{
+                position: absolute;
+                z-index: 5;
+                top: 80%;
+                left: 20%;
+                color:white;
+                font-size: 25px;
+                outline: none;
+            
+                z-index: 7;
+                width: 300px;
+                height: 50px;
+                border-radius: 999px;
+                background-color: rgb(0,0,255);
+                transition: 0.3s ease;
+                position: relative;
+                top: 200px;
+
+
+            }
+
+            .main.editing_button:hover{
+                cursor:pointer;
+                background-color:  rgb(0, 187, 255);
+
+            }
+
+            .main.like_unlike{
+                position: absolute;
+                top: 100%;
+                left: 90%;
+                position: relative;
+            }
+
+            .main.profile{
+                position: relative;
+                top: 150px;
+                left: 400px;
+                width: 600px;
+                height: 300px;
+                background-color: white;
+            }
+
+        </style>
+                    
+
+    </head>
+
+
+    <body>
+
+
+        <script>
+            
+
+            
+            
+
+            
+            
+            
+            function Register(){
+                window.history.pushState({}, "", "/register");
+                const body_div = document.createElement("div")
+                document.body.appendChild(body_div)
+            
+
+
+  
+
+                
+                let divs = document.querySelectorAll("div")
+                
+                for(let i = 0; i < divs.length; i++){
+                    if(divs[i] != body_div){
+                        divs[i].remove()
+
+
+                    }
+                }
+
+
+               
+                const div = document.createElement("div")
+                div.className = "auth background_div"
+               
+                let field = "username"
+
+
+                let username = ""
+                let password = ""
+               
+               
+               
+                body_div.appendChild(div)
+                const input = document.createElement("input")
+                input.className = "auth field_input username"
+                if(field == "username"){
+                    input.placeholder = "Username"
+                }
+                else{
+                    input.placeholder = "Password"
+                }
+                const dont_haveanaccount = document.createElement("div")
+                dont_haveanaccount.innerHTML = `Already have an account <a id="url">Login here</a>`
+                dont_haveanaccount.onclick = function(event){
+                    
+                    
+                    if(event.target.id == "url"){
+                        
+
+                        event.preventDefault()
+                        Login()
+                    }
+                }
+                dont_haveanaccount.className = "auth div"
+                body_div.appendChild(dont_haveanaccount)
+
+
+                input.value = username
+                input.placeholder = "Username"
+                let default_border = input.style.border
+                input.onfocus = function(event){
+                    input.style.border =  "3px solid blue"
+                }
+                input.oninput = function(event){
+                    if(field == "username"){
+                        username = input.value
+                   
+                    }
+                    if(field == "password"){
+                        password = input.value
+                    }
+                }
+                input.onblur = function(event){
+                    input.style.border = default_border;
+                }
+           
+                body_div.appendChild(input)
+                const oval_div = document.createElement("div")
+                oval_div.className = "auth oval_auth"
+                
+                document.body.appendChild(oval_div)
+                const username_div = document.createElement("div")
+                username_div.className = "auth small_auth active"
+                username_div.textContent = "Username"
+                username_div.onclick = ""
+               
+               
+                username_div.onmouseover = function(event){
+                    username_div.style.cursor = "default"
+                }
+               
+           
+
+
+           
+                oval_div.appendChild(username_div)
+                const password_div = document.createElement("div")
+                password_div.textContent = "Password"
+                password_div.className = "auth small_auth inactive password"
+            
+               
+                password_div.onmouseover = function(event){
+                    password_div.style.cursor = "pointer"
+                }
+                
+                const Login_button = document.createElement("button")
+                Login_button.textContent = "Register"
+                Login_button.onmouseover = function(event){
+                    Login_button.style.cursor = "pointer"
+                }
+                Login_button.className = "auth login"
+                Login_button.onclick = function(){
+                    fetch("/auth/register", {method: "POST", headers : {"Content-type":"application/json"}, body : JSON.stringify({username:username, password:password})})
+                    .then(response => response.json())
+                    .then(function(data){
+                        
+                        localStorage.setItem("access_token", data.access_token)
+
+                        if(data.error){
+                            let errors = document.querySelectorAll(".auth.error")
+                            
+                            for(let i = 0; i < errors.length; i++){
+                                errors[i].remove()
+                            }
+                            const error = document.createElement("div")
+                            error.className = "auth error"
+
+                            error.innerHTML = `${data.error} + <button><svg id="button" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="red">
+  <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/>
+</svg></button>`
+
+                            body_div.appendChild(error)
+                            const button = document.getElementById("button")
+                            button.onmouseover = function(event){
+                                button.style.cursor = "pointer"
+                            }
+
+                            button.onclick = function(event){
+                                error.remove()
+                            }
+                        }
+
+                        else{
+                            localStorage.setItem("access_token", data.access_token)
+                            
+                               
+                            let divs = document.querySelectorAll("div")
+                            for(let i =0; i < divs.length; i++){
+                                divs[i].remove()
+                            }
+                            localStorage.setItem("is_log", true);
+                            Home()
+
+                               
+
+                            
+                        }
+                        
+                    })
+                }
+                body_div.appendChild(Login_button)
+                
+                password_div.onclick = function(event){
+                    if(field == "username"){
+                        password_div.className = "auth small_auth active"
+                        username_div.className = "auth small_auth inactive username"
+                        input.value = password
+                        input.placeholder = "Password"
+                        field = "password"
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "pointer"
+                        }
+                        username_div.onclick = password_div.onclick
+                        password_div.style.cursor = "default"
+                        password_div.onclick = null
+
+
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "default"
+                        }
+                    }
+                    else if(field == "password"){
+                        username_div.className = "auth small_auth active"
+                        password_div.className = "auth small_auth inactive password"
+                        field = "username"
+                        input.placeholder = "Username"
+                        input.value = username
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "pointer"
+                        }
+                        username_div.style.cursor = "default"
+                        password_div.onclick = username_div.onclick
+                        username_div.onclick = null
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "default"
+                        }
+
+
+                    }
+                }
+               
+                oval_div.appendChild(password_div)
+                body_div.scrollIntoView()
+               
+            }
+            function Login(){
+                window.history.pushState({}, "", "/login");
+                const body_div = document.createElement("div")
+                document.body.appendChild(body_div)
+
+                
+                let divs = document.querySelectorAll("div")
+                for(let i = 0; i < divs.length; i++){
+                    if(body_div != divs[i]){
+                        divs[i].remove()
+                    }
+                }
+                const div = document.createElement("div")
+                div.className = "auth background_div"
+               
+                let field = "username"
+
+
+                let username = ""
+                let password = ""
+               
+               
+               
+                document.body.appendChild(div)
+                const input = document.createElement("input")
+                input.className = "auth field_input username"
+                if(field == "username"){
+                    input.placeholder = "Username"
+                }
+                else{
+                    input.placeholder = "Password"
+                }
+                const dont_haveanaccount = document.createElement("div")
+                dont_haveanaccount.innerHTML = `Dont have an account <a id="url">Register here</a>`
+               
+
+
+               
+                dont_haveanaccount.className = "auth div"
+                body_div.appendChild(dont_haveanaccount)
+                const url = document.getElementById("url")
+               
+                url.onclick = function(event){
+                    event.preventDefault()
+                    Register()
+                }
+
+
+                input.value = username
+                let default_border = input.style.border
+                input.onfocus = function(event){
+                    input.style.border =  "3px solid blue"
+                }
+                input.oninput = function(event){
+                    if(field == "username"){
+                        username = input.value
+                   
+                    }
+                    if(field == "password"){
+                        password = input.value
+                    }
+                }
+                input.onblur = function(event){
+                    input.style.border = default_border;
+                }
+           
+                body_div.appendChild(input)
+                const oval_div = document.createElement("div")
+                oval_div.className = "auth oval_auth"
+                
+                document.body.appendChild(oval_div)
+                const username_div = document.createElement("div")
+                username_div.className = "auth small_auth active"
+                username_div.textContent = "Username"
+                username_div.onclick = ""
+               
+               
+                username_div.onmouseover = function(event){
+                    username_div.style.cursor = "default"
+                }
+               
+           
+
+
+           
+                oval_div.appendChild(username_div)
+                const password_div = document.createElement("div")
+                password_div.style.left = "0px"
+                password_div.textContent = "Password"
+                password_div.className = "auth small_auth inactive password"
+               
+                password_div.onmouseover = function(event){
+                    password_div.style.cursor = "pointer"
+                }
+                password_div.style.margin = "auto"
+                const Login_button = document.createElement("button")
+                Login_button.textContent = "Login"
+                Login_button.onmouseover = function(event){
+                    Login_button.style.cursor = "pointer"
+                }
+                Login_button.className = "auth login"
+                Login_button.onclick = function(){
+                    fetch("/auth/login", {method: "POST", headers : {"Content-type":"application/json"}, body : JSON.stringify({username:username, password:password})})
+                    .then(response => response.json())
+                    .then(function(data){
+                        localStorage.setItem("access_token", data.access_token)
+                        
+                        if(data.error){
+                            let errors = document.querySelectorAll(".auth.error")
+                            
+                            for(let i = 0; i < errors.length; i++){
+                                errors[i].remove()
+                            }
+                            const error = document.createElement("div")
+                            error.className = "auth error"
+
+                            error.innerHTML = `${data.error} + <button><svg id="button" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="red">
+  <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/>
+</svg></button>`
+
+                            body_div.appendChild(error)
+                            const button = document.getElementById("button")
+                            button.onmouseover = function(event){
+                                button.style.cursor = "pointer"
+                            }
+
+                            button.onclick = function(event){
+                                error.remove()
+                            }
+                        }
+                        else{
+                            localStorage.setItem("access_token", data.access_token)
+                            let divs = document.querySelectorAll("div")
+                            for(let i = 0; i < divs.length; i++){
+                                
+                                
+                                divs[i].remove()
+
+
+                                
+
+
+                            }
+                            localStorage.setItem("is_log", true)
+                            return Home()
+                        }
+                        
+                    })
+                }
+                body_div.appendChild(Login_button)
+                password_div.onclick = function(event){
+                    if(field == "username"){
+                        password_div.className = "auth small_auth active"
+                        username_div.className = "auth small_auth inactive username"
+                        input.value = password
+                        input.placeholder = "Password"
+                        field = "password"
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "pointer"
+                        }
+                        username_div.onclick = password_div.onclick
+                        password_div.style.cursor = "default"
+                        password_div.onclick = null
+
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "default"
+                        }
+                    }
+                    else if(field == "password"){
+                        username_div.className = "auth small_auth active"
+                        password_div.className = "auth small_auth inactive password"
+                        field = "username"
+                        input.placeholder = "Username"
+                        input.value = username
+                        password_div.onmouseover = function(event){
+                            password_div.style.cursor = "pointer"
+                        }
+                        password_div.onclick = username_div.onclick
+                        username_div.style.cursor = "default"
+                        username_div.onclick = null
+                        username_div.onmouseover = function(event){
+                            username_div.style.cursor = "default"
+                        }
+
+
+                    }
+                }
+               
+                oval_div.appendChild(password_div)
+                body_div.scrollIntoView()
+                
+               
+            }
+
+            
+           
+
+            function Home(){
+                
+                window.history.pushState({}, "", "/")
+                
+                
+                
+                let divs = document.querySelectorAll("div")
+                for(let i = 0; i < divs.length; i++){
+                    divs[i].remove()
+                
+                }
+                window.history.pushState({}, "", "")
+              
+                const main_div = document.createElement("div")
+                main_div.className = "main background"
+                document.body.appendChild(main_div)
+                window.onscroll = function(event){
+                    localStorage.setItem("scroll", window.scrollY)
+                }
+                fetch("/posts/get_posts", {headers : {"Authorization" : localStorage.getItem("access_token")}})
+                .then(response => response.json())
+                .then(function(data){
+                    
+                    const posts = document.createElement("div")
+                    posts.className = "main posts"
+                
+                    localStorage.setItem("is_log", data[0].is_log)
+                    main_div.appendChild(posts)
+                    for(let i = 0; i < data.length; i++){
+                        const post = document.createElement("div")
+                        post.className = "main post"
+
+                        
+                        posts.appendChild(post)
+                        const profile = document.createElement("span")
+                       
+                        profile.style.backgroundColor = "black"
+                        profile.style.color = "white"
+                        profile.style.width = "50px"
+                        profile.style.height = "50px"
+                        profile.style.borderRadius = "999px"
+                        profile.style.marginRight = "20px"
+                        profile.style.display = "inline-flex"
+                        profile.style.justifyContent = "center"
+                        profile.style.alignItems = "center"
+                        profile.style.fontSize = "30px"
+                        profile.style.fontFamily = "arial"
+                        profile.style.fontWeight = "500"
+                        profile.onmouseover = function(event){
+                            profile.style.cursor = "pointer"
+                            
+                        }
+                        profile.onclick = function(event){
+                            window.history.pushState({}, "", `/profile?user=${data[i].creator}`)
+                            Profile()
+                        }
+                        profile.textContent = data[i].creator[0].toUpperCase()
+                        post.appendChild(profile)
+
+                        const title = document.createElement("span")
+                        
+                       
+                        title.textContent = data[i].creator
+                        title.style.fontWeight = "200"
+                        post.appendChild(title)
+                        
+                        const content = document.createElement("pre")
+                        content.textContent = data[i].postContent
+                        post.appendChild(content)
+                        const like_unlike = document.createElement("div")
+                        if(!data[i].is_like){
+                            like_unlike.textContent = `🤍 ${data[i].likes}`
+                                
+
+                            }
+                        else{
+                            like_unlike.textContent = `❤️ ${data[i].likes}`
+                        }
+                        like_unlike.className = "main like_unlike"
+                        like_unlike.onmouseover = function(event){
+                            like_unlike.style.cursor = "pointer"
+                        }
+                        like_unlike.onclick = function(event){
+                            
+
+                            fetch("/posts/like", {method : "POST", headers : {"Authorization" : localStorage.getItem("access_token"), "Content-type" : "application/json"}, body : JSON.stringify({is_like : !data[i].is_like, post_id : data[i].post_id})})
+                            .then(res => res.json())
+                            .then(function(datla){
+                                if(data[i].is_like == true){
+                                    like_unlike.textContent = `🤍 ${data[i].likes - 1}`
+                                    data[i].likes--;
+                                }
+
+                                else{
+                                    like_unlike.textContent = `❤️ ${data[i].likes + 1}`
+                                    data[i].likes++;
+                                
+                                
+                                    
+                                
+                                
+
+                            }
+
+                                    
+                                
+                                
+
+                            
+                            
+                                
+                                
+                                data[i].is_like = !data[i].is_like
+
+                                
+
+                            })
+                        }
+                        post.appendChild(like_unlike)
+                        
+                            
+                        const created_at = document.createElement("div")
+                        created_at.textContent = data[i].created_at
+                        post.appendChild(created_at)
+                        const edit_div = document.createElement("div")
+                        edit_div.textContent = "✏️"
+                        edit_div.className = "main edit_button"
+                        edit_div.onclick = function(event){
+                            const overlay = document.createElement("div")
+                            overlay.className = "main overlay"
+                            main_div.appendChild(overlay)
+                            const add_Post = document.createElement("div")
+                            add_Post.className = "main add_post"
+                            main_div.appendChild(add_Post)
+                
+                            const overlay_div = document.createElement("div")
+                            overlay_div.className = "main overlay_div"
+                            overlay_div.contentEditable = true
+                            overlay_div.textContent = data[i].postContent
+                            
+                            add_Post.appendChild(overlay_div)
+                            overlay_div.focus()
+                            const add_button = document.createElement("button")
+                            add_button.className = "main editing_button"
+                            add_button.id = "add"
+                            add_button.textContent = "Edit"
+                            add_Post.appendChild(add_button)
+                            add_button.onclick = function(event){
+                                fetch("/posts/edit", {method : "POST", headers : {"Authorization" : localStorage.getItem("access_token"), "Content-type" : "application/json"}, body : JSON.stringify({post_id : data[i].post_id, postContent: overlay_div.textContent})})
+                                .then(response => response.json())
+                                .then(function(dat_a){
+                                    data[i].postContent = overlay_div.textContent
+                                    add_Post.remove()
+                                    overlay_div.remove()
+                                    content.textContent = data[i].postContent
+                                    overlay.remove()
+                                    
+                                    
+                                })
+                            }
+                            
+                    
+                    
+                    
+                
+                    
+                    
+                   
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                 
+                    
+                    
+                    
+                    
+                    
+                   
+                   
+
+                    
+
+                        }
+                        if(data[i].is_change){
+                            post.appendChild(edit_div)
+                        }
+
+                        const delete_div = document.createElement("div")
+                        delete_div.className = "main delete_button"
+                        delete_div.textContent = "🗑️"
+                        if(data[i].is_change){
+                            post.appendChild(delete_div)
+                            delete_div.onclick = function(event){
+                                fetch("/posts/delete", {method : "POST", headers : {"Authorization" : localStorage.getItem("access_token"), "Content-type": "application/json" }, body : JSON.stringify({post_id: data[i].post_id})})
+                                .then(response => response.json())
+                                .then(function(data){
+                                    post.remove()
+                                })
+                            }
+                        }
+
+                    }
+                })
+
+                const add_Post = document.createElement("div")
+                add_Post.className = "main add_post"
+               
+                if(localStorage.getItem("is_log") == "true"){
+                    
+                    main_div.appendChild(add_Post)
+                }
+
+                const add_input = document.createElement("input")
+                add_input.className = "main add_input"
+                add_input.placeholder = "Create a post"
+                add_input.onfocus = function(event){
+
+                    const overlay = document.createElement("div")
+                    overlay.className = "main overlay"
+                    main_div.appendChild(overlay)
+
+                    const overlay_div = document.createElement("textarea")
+                    overlay_div.className = "main overlay_div"
+                    
+                    overlay_div.contentEditable = true
+                    const title_div = document.createElement("div")
+                    title_div.innerHTML = "Create a post"
+                    title_div.containsEditable= false
+                    
+                 
+                    title_div.className = "main title_div"
+                    
+                    overlay_div.appendChild(title_div)
+                    
+                
+                    title_div.style.overflowX = "hidden"
+                    title_div.style.fontSize = "40px"
+                   
+                    
+                    main_div.appendChild(overlay_div)
+                    
+                    overlay_div.focus()
+                    window.scrollY = localStorage.getItem("scroll")
+                   
+
+                    const add_button = document.createElement("button")
+                    add_button.className = "main add_button"
+                    add_button.id = "add"
+                    add_button.textContent = "Post"
+                    document.addEventListener("keydown", function(event){
+                        if(event.key == "Escape"){
+                            
+                            overlay.remove()
+                            overlay_div.remove()
+                            add_button.remove()
+                        
+                        
+                        }
+                    })
+
+                    
+
+
+                    document.addEventListener("click", function(event){
+                        
+                        
+                        if(event.target.id == "add"){
+                            event.preventDefault()
+                            fetch("/posts/add_post", {method:"POST", headers: {"Authorization" : localStorage.getItem("access_token"), "Content-type": "application/json"}, body : JSON.stringify({postContent : overlay_div.value })})
+                            .then(response => response.json())
+                            .then(function(data){
+                                
+                            
+                                if(data.error){
+                                    
+                                    Login()
+                                }
+                                else{
+                                    overlay.remove()
+                                    overlay_div.remove()
+                                    
+                                    add_button.remove()
+                                    
+                                    window.scrollY = localStorage.getItem("scroll")
+                                }
+                            })
+                        }
+                    })
+
+                    
+                    main_div.appendChild(add_button)
+            
+                }
+                
+                if(localStorage.getItem("is_log") == "true"){
+                    
+                    main_div.appendChild(add_input)
+                }
+                main_div.scrollIntoView()
+
+                const nav = document.createElement("nav")
+                nav.className = "main nav"
+                main_div.appendChild(nav)
+                const search = document.createElement("input")
+                search.className = "main search"
+                nav.appendChild(search)
+
+                const ul = document.createElement("ul")
+                ul.style.display = "flex"
+                ul.style.flexDirection = "row"
+                ul.style.gap = "70px"
+                nav.appendChild(ul)
+                ul.style.color = "white"
+                ul.style.listStyle = "none";
+                ul.style.fontFamily = "arial"
+                ul.style.fontSize = "25px"
+                ul.style.position = "relative"
+                ul.style.left = "600px"
+                ul.style.top = "50px"
+                
+                
+                if(localStorage.getItem("is_log") == "true"){
+                    const li = document.createElement("li")
+                    li.textContent = "Home"
+                    li.style.textDecoration = "none"
+                    li.onclick = function(event){
+                        Home()
+                    }
+                    ul.appendChild(li)
+                    const li_2 = document.createElement("li")
+                    li_2.style.textDecoration = "none"
+                    li_2.onclick = function(event){
+                        localStorage.setItem("is_log", false)
+                        Login()
+                    }
+                    li_2.textContent = "Logout"
+                    ul.appendChild(li_2)
+
+                    const li_  = document.createElement("li")
+                    li_.textContent = "Followed"
+                    ul.appendChild(li_)
+                    li_.onclick = function(event){
+                        Follower()
+
+                    }
+
+                
+                    
+                }
+                else{
+                    const li = document.createElement("li")
+                    li.textContent = "Login"
+                    li.style.textDecoration = "none"
+                    li.onclick = function(event){
+                        Login()
+                    }
+                    ul.appendChild(li)
+                    const li_2 = document.createElement("li")
+                    li_2.onclick = function(event){
+                        Register()
+                    }
+                    li_2.textContent = "Register"
+                    li_2.style.textDecoration = "none"
+                    ul.appendChild(li_2)
+
+                }
+                search.onfocus = function(event){
+                    document.addEventListener("keydown", function(event){
+                        if(event.key == "Enter"){
+                            
+                            window.history.pushState({}, "",    `/search?q=${search.value}`)
+                            Search()
+
+                            
+                        }
+
+                    })
+                }
+
+
+
+            
+
+            }
+
+            function Search(){
+                const params = new URLSearchParams(window.location.search);
+                const page = params.get("page");
+                const query = params.get("q");
+
+                fetch("/posts/search", {method : "POST", headers : {"Content-type" : "application/json"}, body : JSON.stringify({query : query})})
+                .then(response => response.json())
+                .then(function(data){
+                    
+                    let posts_div = document.querySelector(".main.posts")
+                    if(!posts_div){
+                        Home()
+                        window.history.pushState({}, "", `search?q=${query}`)
+                        Search()
+                    }
+                    let posts = document.querySelectorAll(".main.post")
+                    
+                    for(let i = 0; i < posts.length; i++){
+                        posts[i].remove()
+                    }
+
+                    
+                    
+                    for(let i = 0; i < data.length; i++){
+                        const post = document.createElement("div")
+                        post.className = "main post"
+
+                        
+                        posts_div.appendChild(post)
+                        const profile = document.createElement("span")
+                       
+                        profile.style.backgroundColor = "black"
+                        profile.style.color = "white"
+                        profile.style.width = "50px"
+                        profile.style.height = "50px"
+                        profile.style.borderRadius = "999px"
+                        profile.style.marginRight = "20px"
+                        profile.style.display = "inline-flex"
+                        profile.style.justifyContent = "center"
+                        profile.style.alignItems = "center"
+                        const rect = profile.getBoundingClientRect()
+                        const wrapper = document.createElement("div")
+                        const like_unlike = document.createElement("div")
+                        if(!data[i].is_like){
+                            like_unlike.textContent = `🤍 ${data[i].likes}`
+                                
+
+                            }
+                        else{
+                            like_unlike.textContent = `❤️ ${data[i].likes}`
+                        }
+                        like_unlike.className = "main like_unlike"
+                        like_unlike.onmouseover = function(event){
+                            like_unlike.style.cursor = "pointer"
+                        }
+                        like_unlike.onclick = function(event){
+                            fetch("/posts/like", {method : "POST", headers : {"Authorization" : localStorage.getItem("access_token"), "Content-type" : "application/json"}, body : JSON.stringify({is_like : !data[i].is_like, post_id : data[i].post_id})})
+                            .then(res => res.json())
+                            .then(function(datla){
+                                if(data[i].is_like == true){
+                                    
+                                    like_unlike.textContent = `🤍 ${data[i].likes - 1}`
+                                    data[i].likes--;
+
+                                }
+                                else{
+                                    
+                                    like_unlike.textContent = `❤️ ${data[i].likes + 1}`
+                                    data[i].likes++;
+
+                                }
+                                
+                                data[i].is_like = !data[i].is_like
+                                
+
+                            })
+                        }
+                        post.appendChild(like_unlike)
+                        
+                        
+                        profile.style.fontSize = "30px"
+                        profile.style.fontFamily = "arial"
+                        profile.style.fontWeight = "500"
+                        profile.textContent = data[i].creator[0].toUpperCase()
+                        post.appendChild(profile)
+
+                        const title = document.createElement("span")
+                        
+                       
+                        title.textContent = data[i].creator
+                        title.style.fontWeight = "200"
+                        post.appendChild(title)
+                        
+                        const content = document.createElement("pre")
+                        content.textContent = data[i].postContent
+                       
+                        post.appendChild(content)
+                        const created_at = document.createElement("div")
+                        created_at.textContent = data[i].created_at
+                        post.appendChild(created_at)
+                        const delete_div = document.createElement("div")
+                        delete_div.className = "main delete_button"
+                        delete_div.textContent = "🗑️"
+                        if(data[i].is_change){
+                            post.appendChild(delete_div)
+                            delete_div.onclick = function(event){
+                                fetch("/posts/delete", {method : "POST", headers : {"Authorization" : localStorage.getItem("access_token"), "Content-type": "application/json" }, body : JSON.stringify({post_id: data[i].post_id})})
+                                .then(response => response.json())
+                                .then(function(data){
+                                    post.remove()
+                                })
+                            }
+                        }
+                        const edit_div = document.createElement("div")
+                        edit_div.textContent = "✏️"
+                        edit_div.className = "main edit_button"
+                        edit_div.onclick = function(event){
+                            const overlay = document.createElement("div")
+                            overlay.className = "main overlay"
+                            document.body.appendChild(overlay)
+                            const add_Post = document.createElement("div")
+                            add_Post.className = "main add_post"
+                            add_Post.style.top = "300px"
+                            document.body.appendChild(add_Post)
+                
+                            const overlay_div = document.createElement("div")
+                            overlay_div.className = "main overlay_div"
+                            overlay_div.contentEditable = true
+                            overlay_div.textContent = data[i].postContent
+                            
+                            add_Post.appendChild(overlay_div)
+                            overlay_div.focus()
+                            const add_button = document.createElement("button")
+                            add_button.className = "main editing_button"
+                            add_button.id = "add"
+                            add_button.textContent = "Edit"
+                            add_Post.appendChild(add_button)
+                            add_button.onclick = function(event){
+                                fetch("/posts/edit", {method : "POST", headers : {"Authorization" : localStorage.getItem("access_token"), "Content-type" : "application/json"}, body : JSON.stringify({post_id : data[i].post_id, postContent: overlay_div.textContent})})
+                                .then(response => response.json())
+                                .then(function(dat_a){
+                                    data[i].postContent = overlay_div.textContent
+                                    add_Post.remove()
+                                    overlay_div.remove()
+                                    content.textContent = data[i].postContent
+                                    overlay.remove()
+                                    
+                                    
+                                })
+                            }
+
+                            document.addEventListener("keydown", function(event){
+                                if(event.key == "Escape"){
+                                    overlay_div.remove()
+                                    overlay.remove()
+                                    add_Post.remove()
+                                
+                                }
+                            })
+                            
+                    
+                    
+                    
+                
+                    
+                    
+                   
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                 
+                    
+                    
+                    
+                    
+                    
+                   
+                   
+
+                    
+
+                        }
+                        if(data[i].is_change){
+                            post.appendChild(edit_div)
+                        }
+
+                        
+                        
+
+                    
+                
+
+                    }
+
+                })
+            }
+
+            function Profile(){
+                
+                let divs = document.querySelectorAll("div")
+                for(let i = 0; i < divs.length; i++){
+                    divs[i].remove()
+                }
+                const main_div = document.createElement("div")
+                main_div.className = "main background"
+                document.body.appendChild(main_div)
+                const User_div = document.createElement("div")
+                User_div.className = "main profile"
+                document.body.appendChild(User_div)
+                const profile = document.createElement("span")
+                       
+                profile.style.backgroundColor = "black"
+                profile.style.color = "white"
+                
+                profile.style.width = "50px"
+                profile.style.height = "50px"
+                profile.style.borderRadius = "999px"
+                profile.style.marginRight = "20px"
+                profile.style.display = "inline-flex"
+                profile.style.justifyContent = "center"
+                profile.style.alignItems = "center"
+                profile.style.fontSize = "30px"
+                profile.style.fontFamily = "arial"
+                profile.style.position = "absolute"
+                profile.style.fontWeight = "500"
+                
+                profile.style.top = "10%"
+                profile.style.left = "10%"
+                
+
+                const query = new URLSearchParams(window.location.search)
+                let creator = query.get("user")
+
+               
+                
+                profile.textContent = `${creator[0].toUpperCase()}`
+                
+                User_div.appendChild(profile)
+
+                const user = document.createElement("span")
+                user.style.position = "absolute"
+                user.style.top = "15%"
+                user.style.left = "25%"
+                user.textContent = `${creator}  `
+                User_div.appendChild(user)
+                User_div.scrollIntoView()
+                const follow_unfollow = document.createElement("div")
+                follow_unfollow.className = "main add_button"
+                follow_unfollow.style.width = "150px"
+                follow_unfollow.style.height = "50px"
+                follow_unfollow.style.fontFamily = "arial"
+                follow_unfollow.style.display = "flex"
+                
+                follow_unfollow.style.justifyContent = "center"
+                follow_unfollow.style.alignItems = "center"
+                follow_unfollow.onclick = function(event){
+                    
+                    
+                    fetch("/posts/follow", {method : "POST", headers : {"Authorization" : localStorage.getItem("access_token"), "Content-type" : "application/json"}, body: JSON.stringify({username : creator, is_follow :localStorage.getItem("is_follow")})})
+                    .then(response => response.json())
+                    .then(function(action){
+                        
+                        
+                    
+                        
+                        localStorage.setItem("is_follow", action.is_follow)
+                       
+                        let user_ = user.textContent.split(" ")[0]
+                        
+                        let followers = parseInt(user.textContent.split(" ")[1])
+                        
+
+                        
+                        if(action.is_follow == "false"){
+                            follow_unfollow.textContent = "Follow"
+                            localStorage.setItem("is_follow", false)
+                           
+                            user.textContent = `${user_} ${action.followers}`
+                        }
+                        else{
+                            follow_unfollow.textContent = "Unfollow"
+                            localStorage.setItem("is_follow", true)
+                            
+                            user.textContent = `${user_} ${action.followers}`
+                        }
+                        
+                    })
+
+                }
+
+                follow_unfollow.onmouseover = function(event){
+                    follow_unfollow.style.cursor = "pointer"
+                }
+                User_div.appendChild(follow_unfollow)
+
+            
+                const nav = document.createElement("nav")
+                nav.className = "main nav"
+                main_div.appendChild(nav)
+                const search = document.createElement("input")
+                search.className = "main search"
+                nav.appendChild(search)
+
+
+                const ul = document.createElement("ul")
+                ul.style.display = "flex"
+                ul.style.flexDirection = "row"
+                ul.style.gap = "70px"
+                nav.appendChild(ul)
+                ul.style.color = "white"
+                ul.style.listStyle = "none";
+                ul.style.fontFamily = "arial"
+                ul.style.fontSize = "25px"
+                ul.style.position = "relative"
+                ul.style.left = "600px"
+                ul.style.top = "50px"
+               
+                
+                if(localStorage.getItem("is_log") == "true"){
+                    const li = document.createElement("li")
+                    li.textContent = "Home"
+                    li.style.textDecoration = "none"
+                    li.onclick = function(event){
+                        Home()
+                    }
+                    ul.appendChild(li)
+                    const li_2 = document.createElement("li")
+                    li_2.style.textDecoration = "none"
+                    li_2.onclick = function(event){
+                        localStorage.setItem("is_log", false)
+                        Login()
+                    }
+                    li_2.textContent = "Logout"
+                    ul.appendChild(li_2)
+                    
+                }
+                else{
+                    const li = document.createElement("li")
+                    li.textContent = "Login"
+                    li.style.textDecoration = "none"
+                    li.onclick = function(event){
+                        Login()
+                    }
+                    ul.appendChild(li)
+                    const li_2 = document.createElement("li")
+                    li_2.onclick = function(event){
+                        Register()
+                    }
+                    li_2.textContent = "Register"
+                    li_2.style.textDecoration = "none"
+                    ul.appendChild(li_2)
+
+                }
+
+                
+
+                fetch("/posts/profile", {method : "POST", headers : {"Content-type" : "application/json"}, body : JSON.stringify({username : creator})})
+                .then(response => response.json())
+                .then(function(data){
+                    
+                    localStorage.setItem("is_follow", data[0].is_follow)
+                    user.textContent = `${creator} ${data[0].followers}`
+                    const posts = document.createElement("div")
+                    posts.className = "main posts"
+                    follow_unfollow.style.zIndex = "0"
+                    if(localStorage.getItem("is_follow") == "true"){
+                        follow_unfollow.textContent = "Unfollow"
+
+                    }
+                    else{
+                        follow_unfollow.textContent = "Follow"
+                    }
+                
+                    
+                    document.body.appendChild(posts)
+                    for(let i = 0; i < data.length; i++){
+                        const post = document.createElement("div")
+                        post.className = "main post"
+
+                        
+                        posts.appendChild(post)
+                        
+
+                        
+                        
+                        const content = document.createElement("pre")
+                        content.textContent = data[i].postContent
+                        post.appendChild(content)
+                        const like_unlike = document.createElement("div")
+                        if(!data[i].is_like){
+                            like_unlike.textContent = `🤍 ${data[i].likes}`
+                                
+
+                            }
+                        else{
+                            like_unlike.textContent = `❤️ ${data[i].likes}`
+                        }
+                        like_unlike.className = "main like_unlike"
+                        like_unlike.onmouseover = function(event){
+                            like_unlike.style.cursor = "pointer"
+                        }
+                        like_unlike.onclick = function(event){
+                            
+                            
+
+                            fetch("/posts/like", {method : "POST", headers : {"Authorization" : localStorage.getItem("access_token"), "Content-type" : "application/json"}, body : JSON.stringify({is_like : !data[i].is_like, post_id : data[i].post_id})})
+                            .then(res => res.json())
+                            .then(function(datla){
+                                
+                                if(data[i].is_like == true){
+                                    like_unlike.textContent = `🤍 ${data[i].likes - 1}`
+                                    data[i].likes--;
+                                }
+
+                                else{
+                                    like_unlike.textContent = `❤️ ${data[i].likes + 1}`
+                                    data[i].likes++;
+                                
+                                
+                                    
+                                
+                                
+
+                            }
+
+                                    
+                                
+                                
+
+                            
+                            
+                                
+                                
+                                data[i].is_like = !data[i].is_like
+
+                                
+
+                            })
+                        }
+                        post.appendChild(like_unlike)
+                        
+                            
+                        const created_at = document.createElement("div")
+                        created_at.textContent = data[i].created_at
+                        post.appendChild(created_at)
+                        const edit_div = document.createElement("div")
+                        edit_div.textContent = "✏️"
+                        edit_div.className = "main edit_button"
+                        edit_div.onclick = function(event){
+                            const overlay = document.createElement("div")
+                            overlay.className = "main overlay"
+                            main_div.appendChild(overlay)
+                            const add_Post = document.createElement("div")
+                            add_Post.className = "main add_post"
+                            main_div.appendChild(add_Post)
+                
+                            const overlay_div = document.createElement("div")
+                            overlay_div.className = "main overlay_div"
+                            overlay_div.contentEditable = true
+                            overlay_div.textContent = data[i].postContent
+                            
+                            add_Post.appendChild(overlay_div)
+                            overlay_div.focus()
+                            const add_button = document.createElement("button")
+                            add_button.className = "main editing_button"
+                            add_button.id = "add"
+                            add_button.textContent = "Edit"
+                            add_Post.appendChild(add_button)
+                            add_button.onclick = function(event){
+                                fetch("/posts/edit", {method : "POST", headers : {"Authorization" : localStorage.getItem("access_token"), "Content-type" : "application/json"}, body : JSON.stringify({post_id : data[i].post_id, postContent: overlay_div.textContent})})
+                                .then(response => response.json())
+                                .then(function(dat_a){
+                                    data[i].postContent = overlay_div.textContent
+                                    add_Post.remove()
+                                    overlay_div.remove()
+                                    content.textContent = data[i].postContent
+                                    overlay.remove()
+                                    
+                                    
+                                })
+                            }
+                            document.addEventListener("keydown", function(event){
+                                if(event.key == "Escape"){
+                                    overlay.remove()
+                                    overlay_div.remove()
+                                    add_button.remove()
+                                    add_Post.remove()
+                                }
+                            })
+                            
+                    
+                    
+                    
+                
+                    
+                    
+                   
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                 
+                    
+                    
+                    
+                    
+                    
+                   
+                   
+
+                    
+
+                        }
+                        if(data[i].is_change){
+                            post.appendChild(edit_div)
+                        }
+
+                        const delete_div = document.createElement("div")
+                        delete_div.className = "main delete_button"
+                        delete_div.textContent = "🗑️"
+                        if(data[i].is_change){
+                            post.appendChild(delete_div)
+                            delete_div.onclick = function(event){
+                                fetch("/posts/delete", {method : "POST", headers : {"Authorization" : localStorage.getItem("access_token"), "Content-type": "application/json" }, body : JSON.stringify({post_id: data[i].post_id})})
+                                .then(response => response.json())
+                                .then(function(data){
+                                    post.remove()
+                                })
+                            }
+                        }
+
+                    }
+                })
+
+                
+                
+
+            }
+
+            function Follower(){
+                window.history.pushState({}, "", "/followers")
+                let posts_div = document.querySelector(".main.posts")
+               
+                if(!posts_div){
+                    
+                    Home()
+                    
+                    
+                }
+
+                fetch("/posts/get_followers", {headers : {"Authorization" : localStorage.getItem("access_token")}})
+                .then(response => response.json())
+                .then(function(data){
+                    
+                    if(data.error){
+                        Home()
+                    }
+                    
+
+                    post = document.querySelectorAll(".main.post")
+                    for(let i = 0; i < post.length; i++){
+                        post[i].remove()
+                    }
+                    posts_div = document.querySelector(".main.posts")
+
+                    for(let i  = 0; i < data.length; i++){
+                        const post = document.createElement("div")
+                        const profile = document.createElement("span")
+                       
+                        profile.style.backgroundColor = "black"
+                        profile.style.color = "white"
+                        profile.style.width = "50px"
+                        profile.style.height = "50px"
+                        profile.style.borderRadius = "999px"
+                        profile.style.marginRight = "20px"
+                        profile.style.display = "inline-flex"
+                        profile.style.justifyContent = "center"
+                        profile.style.alignItems = "center"
+                        profile.style.fontSize = "30px"
+                        profile.style.fontFamily = "arial"
+                        profile.style.fontWeight = "500"
+                        profile.onmouseover = function(event){
+                            profile.style.cursor = "pointer"
+                            
+                        }
+                        profile.onclick = function(event){
+                            window.history.pushState({}, "", `/profile?user=${data[i].creator}`)
+                            Profile()
+                        }
+                        profile.textContent = data[i].creator[0].toUpperCase()
+                        post.className = "main post"
+                        post.appendChild(profile)
+
+                        const title = document.createElement("span")
+                        
+                       
+                        title.textContent = data[i].creator
+                        title.style.fontWeight = "200"
+                        post.appendChild(title)
+                        
+                        posts_div.appendChild(post)
+                        
+
+                    }
+                })
+            }
+
+            
+
+            function router(){
+                const path = window.location.pathname
+                if(path == "/search"){
+                    
+                    Search(false)
+                    return
+
+
+
+
+                }
+
+                if(path == "/profile"){
+                    return Profile(false)
+                }
+                
+                if(path == "/login"){
+                    return Login(false)
+                }
+
+                if(path == "/register"){
+                    return Register(false)
+                }
+
+                if(path == "/"){
+                    if(localStorage.getItem("access_token") == "null"){
+                        
+                        
+                        Login(false)
+                        return
+
+                    }
+                    return Home(false)
+                }
+
+                if(path == "/followers"){
+                    Follower(false)
+                }
+
+
+                
+            }
+            window.onpopstate = router
+
+            router()
+            
+            
+          
+            
+        </script>
+    </body>
+    
+
+
+
+
+</html>
