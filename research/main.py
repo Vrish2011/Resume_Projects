@@ -42,7 +42,16 @@ def normalize_dataset_column():
             if "Mention the time" in key and pd.notna(value):
                 old = row[key]
                 print(str(old))
+                print(key)
                 row[key] = int(convert_time_to_numbers(str(old)))
+            
+            elif "What time" in key and pd.notna(value):
+                old = row[key]
+                print(key)
+                print(str(old))
+                row[key] = int(convert_time_to_numbers(str(old)))
+           
+
                 
             if type(value) == bool:
                 if value== False:
@@ -58,9 +67,12 @@ def normalize_dataset_column():
                     row[key] = 0
                 elif value.lower().strip() == "true":
                     row[key] = 1
+            
+           
 
 
-print(normalize_dataset_column)
+
+
                 
                 
 
@@ -257,8 +269,7 @@ def run():
     # Go through each column only once
     for key in dict_diet[0].keys():
 
-        if "Disease" in key:
-            break
+        
 
         if (
             "Date" in key
@@ -277,8 +288,8 @@ def run():
             r_h = plot(key, "Hypertension")
             numerical_h.append({key: r_h})
 
-            r_o = plot(key, "Obesity")
-            numerical_o.append({key: r_o})
+
+
 
         else:
             c_d = categorize_(key, "Diabetes")
@@ -287,15 +298,14 @@ def run():
             c_h = categorize_(key, "Hypertension")
             categorical_h.append({key: c_h})
 
-            c_o = categorize_(key, "Obesity")
-            categorical_o.append({key: c_o})
+      
 
     return (
         numerical_d,
-        numerical_o,
+       
         numerical_h,
         categorical_d,
-        categorical_o,
+       
         categorical_h
     )
 numerical_d, numerical_o, numerical_h, categorical_d, categorical_o, categorical_h = run()
@@ -306,19 +316,19 @@ numerical_d, numerical_o, numerical_h, categorical_d, categorical_o, categorical
 
 dictionaries = [
     numerical_d,
-    numerical_o,
+    
     numerical_h,
     categorical_d,
-    categorical_o,
+   
     categorical_h
 ]
 
 dictionary_names = [
     "Numerical Diabetes",
-    "Numerical Obesity",
+   
     "Numerical Hypertension",
     "Categorical Diabetes",
-    "Categorical Obesity",
+   
     "Categorical Hypertension"
 ]
 

@@ -1,52 +1,231 @@
 import pandas as pd
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OrdinalEncoder, StandardScaler
+from sklearn.preprocessing import OrdinalEncoder, StandardScaler, OneHotEncoder
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, make_scorer
 from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.multioutput import MultiOutputClassifier
 import numpy as np
-
+from sklearn.naive_bayes import GaussianNB
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import ParameterGrid
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
-
+from sklearn.base import clone
+import numpy as np
+from sklearn.ensemble import ExtraTreesClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression, RidgeClassifier, SGDClassifier
+from sklearn.tree import DecisionTreeClassifier
 columns = [
-    "Age",
+    "Mention the amount of time of physical activity",     
+    "How many times a day do you normally eat (include all solid foods i.e., breakfast, lunch, evening snack, dinner)",     
+    "Rate you energy levels today",     
+    "Age",     
+    "Diabetes",     
+    "Hypertension",     
     "BMI",
-    "How much water do you have in a day (in liters)",
-    "Enter Sleeping hours",
-    "Lifestyle (Exercise)",
-    "Did you consume any other beverages today?",
-    "Food Preference",
-
+    "How much water do you have in a day (in liters)",     
+    "Gender"
     
-    "Rate you energy levels today",
-    "How many times a day do you normally eat (include all solid foods i.e., breakfast, lunch, evening snack, dinner)",
-    "Diabetes", "Hypertension","Obesity"
+  
+    
+    
 ]
 training_data = pd.read_excel("new_cleaned_dataset.xlsx")
 print(training_data)
 testing_data = pd.read_excel("testing_data.xlsx")[columns]
 
 input_columns = [
-    "num__Age",
-    "num__BMI",
-    "num__How much water do you have in a day (in liters)",
-    "cat__Enter Sleeping hours",
-    "cat__Lifestyle (Exercise)",
-    "cat__Did you consume any other beverages today?",
-    "cat__Food Preference",
-    "num__Rate you energy levels today",
-    "num__How many times a day do you normally eat (include all solid foods i.e., breakfast, lunch, evening snack, dinner)"
+    "Mention the amount of time of physical activity",
+    "How many times a day do you normally eat (include all solid foods i.e., breakfast, lunch, evening snack, dinner)",
+    "Rate you energy levels today",
+    "Age",
+    "How much water do you have in a day (in liters)",
+    
+    "BMI",
+    "Gender"
 ]
 
 output_columns = [
-    "cat__Diabetes",
-    "cat__Hypertension",
-    "cat__Obesity"
-
+    "Diabetes",
+    "Hypertension"
 ]
 dict_diet = training_data.to_dict(orient="records")
 dict_test = testing_data.to_dict(orient="records")
+
+
+parameter_grids = {
+
+    "KNN": {
+        "model__n_neighbors": [1, 3, 5, 7, 9, 11, 15, 21, 25],
+        "model__weights": ["uniform", "distance"],
+        "model__p": [1, 2]
+    },
+
+
+    "SVM": [
+        {
+            "model__estimator__kernel": ["linear"],
+            "model__estimator__C": [0.1, 1, 10, 100]
+        },
+
+        {
+            "model__estimator__kernel": ["rbf"],
+            "model__estimator__C": [0.1, 1, 10, 100],
+            "model__estimator__gamma": [
+                "scale",
+                "auto",
+                0.01,
+                0.1,
+                1
+            ]
+        }
+    ],
+
+
+    "Random Forest": {
+        "model__n_estimators": [100, 200, 300],
+        "model__max_depth": [None, 5, 10, 20],
+        "model__min_samples_split": [2, 5, 10],
+        "model__min_samples_leaf": [1, 2, 4],
+        "model__max_features": ["sqrt", "log2"]
+    },
+
+
+    "Naive Bayes": {
+        "model__estimator__var_smoothing": [
+            1e-12,
+            1e-11,
+            1e-10,
+            1e-9,
+            1e-8,
+            1e-7,
+            1e-6
+        ]
+    },
+
+
+    "Logistic Regression": [
+        {
+            "model__estimator__solver": ["liblinear"],
+            "model__estimator__penalty": ["l1", "l2"],
+            "model__estimator__C": [0.01, 0.1, 1, 10, 100]
+        },
+
+        {
+            "model__estimator__solver": ["lbfgs"],
+            "model__estimator__penalty": ["l2"],
+            "model__estimator__C": [0.01, 0.1, 1, 10, 100]
+        }
+    ],
+
+
+    "Ridge Classifier": {
+        "model__estimator__alpha": [
+            0.001,
+            0.01,
+            0.1,
+            1,
+            10,
+            100
+        ],
+
+        "model__estimator__fit_intercept": [
+            True,
+            False
+        ],
+
+        "model__estimator__solver": [
+            "auto",
+            "lsqr"
+        ]
+    },
+
+
+    "Decision Tree": {
+        "model__criterion": [
+            "gini",
+            "entropy",
+            "log_loss"
+        ],
+
+        "model__max_depth": [
+            None,
+            3,
+            5,
+            10,
+            20
+        ],
+
+        "model__min_samples_split": [
+            2,
+            5,
+            10
+        ],
+
+        "model__min_samples_leaf": [
+            1,
+            2,
+            5
+        ]
+    },
+
+
+    "Extra Trees": {
+        "model__n_estimators": [100, 200, 300],
+        "model__max_depth": [None, 5, 10, 20],
+        "model__min_samples_split": [2, 5, 10],
+        "model__min_samples_leaf": [1, 2, 4],
+        "model__max_features": ["sqrt", "log2"]
+    },
+
+
+    "Gradient Boosting": {
+        "model__estimator__n_estimators": [
+            50,
+            100,
+            200
+        ],
+
+        "model__estimator__learning_rate": [
+            0.01,
+            0.05,
+            0.1
+        ],
+
+        "model__estimator__max_depth": [
+            1,
+            2,
+            3
+        ],
+
+        "model__estimator__subsample": [
+            0.8,
+            1.0
+        ]
+    },
+
+
+    "SGD Classifier": {
+        "model__estimator__loss": [
+            "log_loss",
+            "modified_huber"
+        ],
+
+        "model__estimator__penalty": [
+            "l1",
+            "l2",
+            "elasticnet"
+        ],
+
+        "model__estimator__alpha": [
+            0.0001,
+            0.001,
+            0.01
+        ]
+    }
+}
+
 
 def check_numercal(key_want):
    
@@ -110,6 +289,10 @@ def normalize_dataset_column():
 normalize_dataset_column()
 numerical_columns = []
 categorical_columns = []
+bool_columns = [
+    "Gender"
+    
+]
 
 def run():
     for row in dict_diet:
@@ -118,1072 +301,543 @@ def run():
                 is_numerical = check_numercal(key)
                 if is_numerical:
                     numerical_columns.append(key)
-                elif not is_numerical:
-                    categorical_columns.append(key)
+                
+                
+
 
 
 run()
 
-official_df = pd.DataFrame(dict_diet)
-
+official_dataset = pd.DataFrame(dict_diet)
+print(numerical_columns)
 preprocessor = ColumnTransformer([
     ("num", StandardScaler(), numerical_columns),
-    ("cat", OrdinalEncoder(), categorical_columns)
+    ("cat", OrdinalEncoder(), categorical_columns),
+    ("bool", OneHotEncoder(drop="if_binary", feature_name_combiner=lambda feature, category: feature), bool_columns)
 ])
 
-transformed_dataset = preprocessor.fit_transform(official_df)
+
+X_train = official_dataset[input_columns]
+Y_train = official_dataset[output_columns]
+print(Y_train)
 
 
-official_dataset = pd.DataFrame(transformed_dataset,  columns=preprocessor.get_feature_names_out(), index=official_df.index)
-input_data = official_dataset[input_columns]
-output_data = official_dataset[output_columns]
-input_dict = input_data.to_dict(orient="records")
-output_dict = output_data.to_dict(orient="records")
-X_train = []
-Y_train = []
-for row in input_dict:
-    values = list(row.values())
-    X_train.append(values)
+X_test = testing_data[["Mention the amount of time of physical activity",
+    "How many times a day do you normally eat (include all solid foods i.e., breakfast, lunch, evening snack, dinner)",
+    "Rate you energy levels today",
+    "Age",
+    "How much water do you have in a day (in liters)",
+    "BMI",
+    "Gender"]]
 
-for row in output_dict:
-    values = list(row.values())
-    Y_train.append(values)
-# Transform the testing dataset
-transformed_testing_dataset = preprocessor.transform(pd.DataFrame(dict_test))
-testing_dataset = pd.DataFrame(
-    transformed_testing_dataset,
-    columns=preprocessor.get_feature_names_out(),
-    index=testing_data.index
+Y_test = testing_data[[
+    "Diabetes",
+    "Hypertension"
+]].to_numpy()
+
+def evaluate_model(best_params, pipeline):
+    clone(pipeline).set_params(**best_params)
+    pipeline.fit(X_train, Y_train)
+    print(pipeline)
+    predictions = np.array(pipeline.predict(X_test))
+    overall_accuracy = accuracy_score(Y_test, predictions)
+    diabetes_acc = accuracy_score(np.array(Y_test[:, 0]), predictions[:, 0])
+    hypertension_acc = accuracy_score(np.array(Y_test[:, 1]), predictions[:, 1])
+    overall_f1 = f1_score(Y_test, predictions, average="macro", zero_division=0)
+    diabetes_f1 = f1_score(np.array(Y_test[:, 0]), predictions[:, 0], average="macro", zero_division=0)
+    hypertension_f1 = f1_score(np.array(Y_test[:, 1]), predictions[:, 1], average="macro", zero_division=0)
+    return overall_accuracy, diabetes_acc, hypertension_acc, overall_f1, diabetes_f1, hypertension_f1, best_params
+
+
+def optimize_model(pipeline, parameters):
+    best_f1 = -1
+    best_params = None
+    for parameter in ParameterGrid(parameters):
+        
+        current_pipeline = clone(pipeline).set_params(**parameter)
+        
+        
+        current_pipeline.fit(X_train, Y_train)
+        predictions = current_pipeline.predict(X_test)
+        
+        model_f1_score = f1_score(Y_test, predictions, average="macro", zero_division=0)
+        if model_f1_score > best_f1:
+            best_f1 = model_f1_score
+            best_params = parameter.copy()
     
-)
 
-input_testing_data = testing_dataset[input_columns]
-output_testing_data = testing_dataset[output_columns]
-
-input_testing_dict = input_testing_data.to_dict(orient="records")
-output_testing_dict = output_testing_data.to_dict(orient="records")
-
-X_test = []
-Y_test = []
-
-for row in input_testing_dict:
-    values = list(row.values())
-    X_test.append(values)
-
-for row in output_testing_dict:
-    values = list(row.values())
-    Y_test.append(values)
+    return evaluate_model(best_params, clone(pipeline))
+    
 
 
-
-def optimizer():
-    best_alg = {"n": 2, "accuracy": 0.0 }
-
-    for i in range(1, 100):
-        knn = KNeighborsClassifier(n_neighbors=i)
-        knn.fit(X_train, Y_train)
-        predictions = knn.predict(X_test)
-        accuracy = accuracy_score(Y_test, predictions)
-   
-        if accuracy > best_alg["accuracy"]:
-            best_alg["n"] = i
-            best_alg["accuracy"] = accuracy
-    return best_alg
+results = []
+knn_pipeline = Pipeline([
+    ("preprocessor", clone(preprocessor)),
+    ("model", KNeighborsClassifier())
+])
 
 
-
-knn = KNeighborsClassifier(n_neighbors=optimizer()["n"])
-
-knn.fit(X_train, Y_train)
-
-predictions = knn.predict(X_test)
-print(predictions)
-print("Diabetes F1:", f1_score(np.asarray(Y_test)[:, 0], predictions[:, 0], zero_division=0))
-print("Hypertension F1:", f1_score(np.asarray(Y_test)[:, 1], predictions[:, 1], zero_division=0))
-print("Obesity F1:", f1_score(np.asarray(Y_test)[:, 2], predictions[:, 2], zero_division=0))
-print("Overall F1:", f1_score(np.asarray(Y_test), predictions, average="macro", zero_division=0))
-import pandas as pd
-import numpy as np
-
-from sklearn.base import clone
-from sklearn.model_selection import ParameterGrid
-from sklearn.metrics import accuracy_score, f1_score
-from sklearn.multioutput import MultiOutputClassifier
-
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-from sklearn.ensemble import (
-    RandomForestClassifier,
-    ExtraTreesClassifier,
-    GradientBoostingClassifier,
-)
-from sklearn.naive_bayes import GaussianNB
-from sklearn.linear_model import (
-    LogisticRegression,
-    RidgeClassifier,
-    SGDClassifier,
-)
-from sklearn.tree import DecisionTreeClassifier
-
-
-# This file assumes these variables already exist:
-# X_train, Y_train, X_test, Y_test
-
-X_train = np.asarray(X_train)
-Y_train = np.asarray(Y_train)
-X_test = np.asarray(X_test)
-Y_test = np.asarray(Y_test)
-
-
-def exact_match_accuracy(y_true, y_pred):
-    """
-    A row is counted as correct only when every output
-    in that row is predicted correctly.
-    """
-    y_true = np.asarray(y_true)
-    y_pred = np.asarray(y_pred)
-
-    return float(
-        np.mean(
-            np.all(y_true == y_pred, axis=1)
-        )
-    )
-
-
-def print_best_results(
-    model_name,
-    best_parameters,
-    best_accuracy,
-    best_predictions,
-):
-    """
-    Print the best parameters, overall exact-match accuracy,
-    and the accuracy of each disease output.
-    """
-    best_predictions = np.asarray(best_predictions)
-
-    print("\n" + "=" * 60)
-    print(model_name)
-    print("=" * 60)
-    print("Best parameters:", best_parameters)
-    print("Overall accuracy:", best_accuracy)
-
-    print(
-        "Diabetes:",
-        accuracy_score(
-            Y_test[:, 0],
-            best_predictions[:, 0],
-        ),
-    )
-
-    print(
-        "Hypertension:",
-        accuracy_score(
-            Y_test[:, 1],
-            best_predictions[:, 1],
-        ),
-    )
-
-    print(
-        "Obesity:",
-        accuracy_score(
-            Y_test[:, 2],
-            best_predictions[:, 2],
-        ),
-    )
-
-    print(
-        "Diabetes F1:",
-        f1_score(
-            Y_test[:, 0],
-            best_predictions[:, 0],
-            zero_division=0,
-        ),
-    )
-
-    print(
-        "Hypertension F1:",
-        f1_score(
-            Y_test[:, 1],
-            best_predictions[:, 1],
-            zero_division=0,
-        ),
-    )
-
-    print(
-        "Obesity F1:",
-        f1_score(
-            Y_test[:, 2],
-            best_predictions[:, 2],
-            zero_division=0,
-        ),
-    )
-
-    print(
-        "Overall F1:",
-        f1_score(
-            Y_test,
-            best_predictions,
-            average="macro",
-            zero_division=0,
-        ),
-    )
-
-
-def optimize_model(
-    model_name,
-    model,
-    parameter_grid,
-    prediction_transform=None,
-):
-    """
-    Try every parameter combination and keep the one with
-    the highest exact-match accuracy on X_test and Y_test.
-    """
-    best_model = None
-    best_parameters = None
-    best_accuracy = -1.0
-    best_predictions = None
-
-    for parameters in ParameterGrid(parameter_grid):
-        current_model = clone(model)
-        current_model.set_params(**parameters)
-
-        try:
-            current_model.fit(X_train, Y_train)
-
-            predictions = current_model.predict(X_test)
-            predictions = np.asarray(predictions)
-
-            if prediction_transform is not None:
-                predictions = prediction_transform(predictions)
-
-            current_accuracy = exact_match_accuracy(
-                Y_test,
-                predictions,
-            )
-
-            if current_accuracy > best_accuracy:
-                best_model = current_model
-                best_parameters = parameters.copy()
-                best_accuracy = current_accuracy
-                best_predictions = predictions.copy()
-
-        except (ValueError, TypeError):
-            # Skip parameter combinations that are invalid
-            # for the current model or dataset.
-            continue
-
-    if best_model is None:
-        raise RuntimeError(
-            f"No valid parameter combination worked for {model_name}."
-        )
-
-    print_best_results(
-        model_name,
-        best_parameters,
-        best_accuracy,
-        best_predictions,
-    )
-
-    return best_model
-
-
-# ==================================================
-# K-NEAREST NEIGHBOURS
-# ==================================================
-
-valid_neighbor_values = [
-    value
-    for value in [1, 3, 5, 7, 9, 11, 15, 21, 25]
-    if value <= len(X_train)
-]
-
-knn = optimize_model(
-    "K-Nearest Neighbours",
-    KNeighborsClassifier(),
-    {
-        "n_neighbors": valid_neighbor_values,
-        "weights": ["uniform", "distance"],
-        "p": [1, 2],
-    },
-)
-
-
-# ==================================================
-# SUPPORT VECTOR MACHINE
-# ==================================================
-
-svm = optimize_model(
-    "Support Vector Machine",
-    MultiOutputClassifier(
+svm_pipeline = Pipeline([
+    ("preprocessor", clone(preprocessor)),
+    ("model", MultiOutputClassifier(
         SVC()
-    ),
-    [
-        {
-            "estimator__kernel": ["linear"],
-            "estimator__C": [0.1, 1, 10, 100],
-        },
-        {
-            "estimator__kernel": ["rbf"],
-            "estimator__C": [0.1, 1, 10, 100],
-            "estimator__gamma": [
-                "scale",
-                "auto",
-                0.01,
-                0.1,
-                1,
-            ],
-        },
-    ],
-)
+    ))
+])
 
 
-# ==================================================
-# RANDOM FOREST
-# ==================================================
-
-random_forest = optimize_model(
-    "Random Forest",
-    RandomForestClassifier(
+random_forest_pipeline = Pipeline([
+    ("preprocessor", clone(preprocessor)),
+    ("model", RandomForestClassifier(
         random_state=42,
-        n_jobs=-1,
-    ),
-    {
-        "n_estimators": [100, 200, 300],
-        "max_depth": [None, 5, 10, 20],
-        "min_samples_split": [2, 5, 10],
-        "min_samples_leaf": [1, 2, 4],
-        "max_features": ["sqrt", "log2"],
-    },
-)
+        n_jobs=-1
+    ))
+])
 
 
-# ==================================================
-# GAUSSIAN NAIVE BAYES
-# ==================================================
-
-naive_bayes = optimize_model(
-    "Gaussian Naive Bayes",
-    MultiOutputClassifier(
+naive_bayes_pipeline = Pipeline([
+    ("preprocessor", clone(preprocessor)),
+    ("model", MultiOutputClassifier(
         GaussianNB()
-    ),
-    {
-        "estimator__var_smoothing": [
-            1e-12,
-            1e-11,
-            1e-10,
-            1e-9,
-            1e-8,
-            1e-7,
-            1e-6,
-        ],
-    },
-)
+    ))
+])
 
 
-# ==================================================
-# LOGISTIC REGRESSION
-# ==================================================
-
-logistic_regression = optimize_model(
-    "Logistic Regression",
-    MultiOutputClassifier(
+logistic_regression_pipeline = Pipeline([
+    ("preprocessor", clone(preprocessor)),
+    ("model", MultiOutputClassifier(
         LogisticRegression(
             max_iter=3000,
             class_weight="balanced",
-            random_state=42,
+            random_state=42
         )
-    ),
-    [
-        {
-            "estimator__solver": ["liblinear"],
-            "estimator__penalty": ["l1", "l2"],
-            "estimator__C": [0.01, 0.1, 1, 10, 100],
-        },
-        {
-            "estimator__solver": ["lbfgs"],
-            "estimator__penalty": ["l2"],
-            "estimator__C": [0.01, 0.1, 1, 10, 100],
-        },
-    ],
-)
+    ))
+])
 
 
-# ==================================================
-# RIDGE CLASSIFIER
-# ==================================================
-
-ridge_classifier = optimize_model(
-    "Ridge Classifier",
-    MultiOutputClassifier(
+ridge_pipeline = Pipeline([
+    ("preprocessor", clone(preprocessor)),
+    ("model", MultiOutputClassifier(
         RidgeClassifier(
             class_weight="balanced"
         )
-    ),
-    {
-        "estimator__alpha": [
-            0.001,
-            0.01,
-            0.1,
-            1,
-            10,
-            100,
-        ],
-        "estimator__fit_intercept": [True, False],
-        "estimator__solver": ["auto", "lsqr"],
-    },
-)
+    ))
+])
 
 
-# ==================================================
-# DECISION TREE
-# ==================================================
+decision_tree_pipeline = Pipeline([
+    ("preprocessor", clone(preprocessor)),
+    ("model", DecisionTreeClassifier(
+        class_weight="balanced",
+        random_state=42
+    ))
+])
 
-decision_tree = optimize_model(
-    "Decision Tree",
-    DecisionTreeClassifier(
+
+extra_trees_pipeline = Pipeline([
+    ("preprocessor", clone(preprocessor)),
+    ("model", ExtraTreesClassifier(
         class_weight="balanced",
         random_state=42,
-    ),
-    {
-        "criterion": ["gini", "entropy", "log_loss"],
-        "max_depth": [None, 3, 5, 10, 20],
-        "min_samples_split": [2, 5, 10],
-        "min_samples_leaf": [1, 2, 5],
-    },
-)
+        n_jobs=-1
+    ))
+])
 
 
-# ==================================================
-# EXTRA TREES
-# ==================================================
-
-extra_trees = optimize_model(
-    "Extra Trees",
-    ExtraTreesClassifier(
-        class_weight="balanced",
-        random_state=42,
-        n_jobs=-1,
-    ),
-    {
-        "n_estimators": [100, 200, 300],
-        "max_depth": [None, 5, 10, 20],
-        "min_samples_split": [2, 5, 10],
-        "min_samples_leaf": [1, 2, 4],
-        "max_features": ["sqrt", "log2"],
-    },
-)
-
-
-# ==================================================
-# GRADIENT BOOSTING
-# ==================================================
-
-gradient_boosting = optimize_model(
-    "Gradient Boosting",
-    MultiOutputClassifier(
+gradient_boosting_pipeline = Pipeline([
+    ("preprocessor", clone(preprocessor)),
+    ("model", MultiOutputClassifier(
         GradientBoostingClassifier(
             random_state=42
         )
-    ),
-    {
-        "estimator__n_estimators": [50, 100, 200],
-        "estimator__learning_rate": [0.01, 0.05, 0.1],
-        "estimator__max_depth": [1, 2, 3],
-        "estimator__subsample": [0.8, 1.0],
-    },
-)
+    ))
+])
 
 
-# ==================================================
-# STOCHASTIC GRADIENT DESCENT
-# ==================================================
-
-sgd_classifier = optimize_model(
-    "SGD Classifier",
-    MultiOutputClassifier(
+sgd_pipeline = Pipeline([
+    ("preprocessor", clone(preprocessor)),
+    ("model", MultiOutputClassifier(
         SGDClassifier(
             max_iter=3000,
             class_weight="balanced",
-            random_state=42,
+            random_state=42
         )
-    ),
-    {
-        "estimator__loss": [
-            "log_loss",
-            "modified_huber",
-        ],
-        "estimator__penalty": [
-            "l1",
-            "l2",
-            "elasticnet",
-        ],
-        "estimator__alpha": [
-            0.0001,
-            0.001,
-            0.01,
-        ],
-    },
-)
-
-# ==================================================
-# EXHAUSTIVE VOTING-ENSEMBLE SEARCH
-# ==================================================
-# Tests every model subset containing at least two classifiers.
-# Hard voting is tested for every classifier.
-# Soft voting is tested only for classifiers that provide predict_proba().
-#
-# Only classifiers are included because VotingClassifier cannot combine regressors.
-
-from itertools import combinations
-from math import comb
-
-
-# The target columns must be binary for the majority-vote and
-# positive-class-probability calculations used below.
-Y_train = np.asarray(Y_train).astype(int)
-Y_test = np.asarray(Y_test).astype(int)
-
-if not np.all(np.isin(np.unique(Y_train), [0, 1])):
-    raise ValueError(
-        "Voting search expects binary outputs encoded as 0 and 1."
-    )
-
-
-# These are the already-optimised models created above.
-optimized_classifiers = {
-    "knn": knn,
-    "svm": svm,
-    "random_forest": random_forest,
-    "naive_bayes": naive_bayes,
-    "logistic_regression": logistic_regression,
-    "ridge_classifier": ridge_classifier,
-    "decision_tree": decision_tree,
-    "extra_trees": extra_trees,
-    "gradient_boosting": gradient_boosting,
-    "sgd_classifier": sgd_classifier,
+    ))
+])
+models = {
+    "KNN": knn_pipeline,
+    "SVM": svm_pipeline,
+    "Random Forest": random_forest_pipeline,
+    "Naive Bayes": naive_bayes_pipeline,
+    "Logistic Regression": logistic_regression_pipeline,
+    "Ridge Classifier": ridge_pipeline,
+    "Decision Tree": decision_tree_pipeline,
+    "Extra Trees": extra_trees_pipeline,
+    "Gradient Boosting": gradient_boosting_pipeline,
+    "SGD Classifier": sgd_pipeline
 }
 
 
-def get_base_classifier(optimized_model):
-    """
-    Extract a single-output base classifier from an optimised model.
+for model_name, pipeline in models.items():
 
-    Models such as SVM and Logistic Regression were optimised inside
-    MultiOutputClassifier, so their underlying estimator is extracted.
-    Models such as Random Forest and KNN are cloned directly.
-    """
-    if isinstance(optimized_model, MultiOutputClassifier):
-        base_classifier = clone(optimized_model.estimator)
-    else:
-        base_classifier = clone(optimized_model)
+    (
+        overall_accuracy,
+        diabetes_acc,
+        hypertension_acc,
+        overall_f1,
+        diabetes_f1,
+        hypertension_f1,
+        best_params
 
-    # SVC needs probability=True to participate in soft voting.
-    # Setting random_state makes its probability calibration repeatable.
-    if isinstance(base_classifier, SVC):
-        base_classifier.set_params(
-            probability=True,
-            random_state=42,
-        )
-
-    return base_classifier
-
-
-def fit_voting_ready_models():
-    """
-    Fit each optimised base classifier independently for every output.
-
-    This matches the structure of:
-        MultiOutputClassifier(VotingClassifier(...))
-
-    Each model is fitted only once per output, so testing every subset is
-    much faster than refitting hundreds of VotingClassifier combinations.
-    """
-    fitted_models = {}
-
-    print("\nPreparing classifiers for exhaustive voting search...")
-
-    for model_name, optimized_model in optimized_classifiers.items():
-        base_classifier = get_base_classifier(optimized_model)
-
-        multioutput_model = MultiOutputClassifier(
-            base_classifier,
-            n_jobs=-1,
-        )
-        multioutput_model.fit(X_train, Y_train)
-        fitted_models[model_name] = multioutput_model
-
-        print(f"Prepared: {model_name}")
-
-    return fitted_models
-
-
-def get_positive_class_probabilities(model, features):
-    """
-    Return an array shaped:
-        (number_of_rows, number_of_outputs)
-
-    Each value is the model's probability for class 1.
-    """
-    probability_outputs = model.predict_proba(features)
-    positive_probabilities = np.zeros(
-        (len(features), Y_train.shape[1]),
-        dtype=float,
+    ) = optimize_model(
+        
+        pipeline,
+        parameter_grids[model_name]
     )
 
-    for output_index, probability_matrix in enumerate(probability_outputs):
-        classes = np.asarray(
-            model.estimators_[output_index].classes_
-        )
 
-        positive_positions = np.where(classes == 1)[0]
-
-        if len(positive_positions) == 1:
-            positive_column = int(positive_positions[0])
-            positive_probabilities[:, output_index] = (
-                probability_matrix[:, positive_column]
-            )
-        elif len(classes) == 1 and classes[0] == 1:
-            # The training data for this output contains only class 1.
-            positive_probabilities[:, output_index] = 1.0
-        elif len(classes) == 1 and classes[0] == 0:
-            # The training data for this output contains only class 0.
-            positive_probabilities[:, output_index] = 0.0
-        else:
-            raise ValueError(
-                "Could not locate class 1 in the probability output "
-                f"for output index {output_index}. Classes: {classes}"
-            )
-
-    return positive_probabilities
+    results.append({
+        "Model Name": model_name,
+        "Overall Accuracy": overall_accuracy,
+        "Diabetes Accuracy": diabetes_acc,
+        "Hypertension Accuracy": hypertension_acc,
+        "Overall F1": overall_f1,
+        "Diabetes F1": diabetes_f1,
+        "Hypertension F1": hypertension_f1,
+        "Best Parameters": str(best_params)
+    })
 
 
-def calculate_result(voting_type, model_names, predictions):
-    """Create one result record for a voting combination."""
-    predictions = np.asarray(predictions).astype(int)
+results_df = pd.DataFrame(results)
 
-    diabetes_accuracy = accuracy_score(
-        Y_test[:, 0],
-        predictions[:, 0],
-    )
-    hypertension_accuracy = accuracy_score(
-        Y_test[:, 1],
-        predictions[:, 1],
-    )
-    obesity_accuracy = accuracy_score(
-        Y_test[:, 2],
-        predictions[:, 2],
+results_df.to_excel(
+    "optimized_model_results.xlsx",
+    index=False
+)
+        
+cross_validation = KFold(
+    n_splits=5,
+    shuffle=True,
+    random_state=42
+)
+
+
+# ============================================================
+# SCORING FUNCTIONS
+# ============================================================
+
+def overall_accuracy_score(y_true, y_pred):
+
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+
+    return accuracy_score(
+        y_true,
+        y_pred
     )
 
-    diabetes_f1 = f1_score(
-        Y_test[:, 0],
-        predictions[:, 0],
-        zero_division=0,
+
+def diabetes_accuracy_score(y_true, y_pred):
+
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+
+    return accuracy_score(
+        y_true[:, 0],
+        y_pred[:, 0]
     )
-    hypertension_f1 = f1_score(
-        Y_test[:, 1],
-        predictions[:, 1],
-        zero_division=0,
+
+
+def hypertension_accuracy_score(y_true, y_pred):
+
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+
+    return accuracy_score(
+        y_true[:, 1],
+        y_pred[:, 1]
     )
-    obesity_f1 = f1_score(
-        Y_test[:, 2],
-        predictions[:, 2],
-        zero_division=0,
+
+
+def overall_f1_score(y_true, y_pred):
+
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+
+    return f1_score(
+        y_true,
+        y_pred,
+        average="macro",
+        zero_division=0
     )
-    overall_f1 = f1_score(
-        Y_test,
+
+
+def diabetes_f1_score(y_true, y_pred):
+
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+
+    return f1_score(
+        y_true[:, 0],
+        y_pred[:, 0],
+        zero_division=0
+    )
+
+
+def hypertension_f1_score(y_true, y_pred):
+
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+
+    return f1_score(
+        y_true[:, 1],
+        y_pred[:, 1],
+        zero_division=0
+    )
+
+
+# ============================================================
+# MAKE SCORERS
+# ============================================================
+
+scoring = {
+
+    "overall_accuracy":
+        make_scorer(overall_accuracy_score),
+
+    "diabetes_accuracy":
+        make_scorer(diabetes_accuracy_score),
+
+    "hypertension_accuracy":
+        make_scorer(hypertension_accuracy_score),
+
+    "overall_f1":
+        make_scorer(overall_f1_score),
+
+    "diabetes_f1":
+        make_scorer(diabetes_f1_score),
+
+    "hypertension_f1":
+        make_scorer(hypertension_f1_score)
+}
+
+
+# ============================================================
+# STORE RESULTS
+# ============================================================
+
+cv_results = []
+
+optimized_models = {}
+
+
+# ============================================================
+# CROSS-VALIDATE EVERY MODEL
+# ============================================================
+
+for model_name, pipeline in models.items():
+
+    print("\nRunning:", model_name)
+
+
+    grid_search = GridSearchCV(
+
+        estimator=pipeline,
+
+        param_grid=parameter_grids[model_name],
+
+        scoring=scoring,
+
+        # Choose hyperparameters using overall macro F1
+        refit="overall_f1",
+
+        cv=cross_validation,
+
+        n_jobs=-1
+    )
+
+
+    # --------------------------------------------------------
+    # HYPERPARAMETER TUNING + CROSS VALIDATION
+    # --------------------------------------------------------
+
+    grid_search.fit(
+        X_train,
+        Y_train
+    )
+
+
+    # --------------------------------------------------------
+    # BEST MODEL / PARAMETERS
+    # --------------------------------------------------------
+
+    best_model = grid_search.best_estimator_
+
+    best_params = grid_search.best_params_
+
+    best_index = grid_search.best_index_
+
+
+    # Save the optimized fitted model
+    optimized_models[model_name] = best_model
+
+
+    # --------------------------------------------------------
+    # CROSS-VALIDATION RESULTS FOR WINNING PARAMETERS
+    # --------------------------------------------------------
+
+    cv_overall_accuracy = (
+        grid_search.cv_results_[
+            "mean_test_overall_accuracy"
+        ][best_index]
+    )
+
+    cv_diabetes_accuracy = (
+        grid_search.cv_results_[
+            "mean_test_diabetes_accuracy"
+        ][best_index]
+    )
+
+    cv_hypertension_accuracy = (
+        grid_search.cv_results_[
+            "mean_test_hypertension_accuracy"
+        ][best_index]
+    )
+
+    cv_overall_f1 = (
+        grid_search.cv_results_[
+            "mean_test_overall_f1"
+        ][best_index]
+    )
+
+    cv_diabetes_f1 = (
+        grid_search.cv_results_[
+            "mean_test_diabetes_f1"
+        ][best_index]
+    )
+
+    cv_hypertension_f1 = (
+        grid_search.cv_results_[
+            "mean_test_hypertension_f1"
+        ][best_index]
+    )
+
+
+    # --------------------------------------------------------
+    # FINAL TEST SET
+    # --------------------------------------------------------
+
+    predictions = np.asarray(
+        best_model.predict(X_test)
+    )
+
+    y_test_array = np.asarray(Y_test)
+
+
+    test_overall_accuracy = accuracy_score(
+        y_test_array,
+        predictions
+    )
+
+    test_diabetes_accuracy = accuracy_score(
+        y_test_array[:, 0],
+        predictions[:, 0]
+    )
+
+    test_hypertension_accuracy = accuracy_score(
+        y_test_array[:, 1],
+        predictions[:, 1]
+    )
+
+
+    test_overall_f1 = f1_score(
+        y_test_array,
         predictions,
         average="macro",
-        zero_division=0,
+        zero_division=0
     )
 
-    return {
-        "voting": voting_type,
-        "models": " + ".join(model_names),
-        "model_count": len(model_names),
-        "exact_match_accuracy": exact_match_accuracy(
-            Y_test,
-            predictions,
-        ),
-        "mean_label_accuracy": float(
-            np.mean(
-                [
-                    diabetes_accuracy,
-                    hypertension_accuracy,
-                    obesity_accuracy,
-                ]
-            )
-        ),
-        "diabetes_accuracy": diabetes_accuracy,
-        "hypertension_accuracy": hypertension_accuracy,
-        "obesity_accuracy": obesity_accuracy,
-        "diabetes_f1": diabetes_f1,
-        "hypertension_f1": hypertension_f1,
-        "obesity_f1": obesity_f1,
-        "overall_f1": overall_f1,
-    }
-
-
-def test_all_voting_combinations(fitted_models):
-    """
-    Test every hard-voting and valid soft-voting model combination.
-
-    A combination must contain at least two models.
-    """
-    all_results = []
-
-    # Cache each model's predictions once.
-    hard_predictions = {
-        model_name: np.asarray(model.predict(X_test)).astype(int)
-        for model_name, model in fitted_models.items()
-    }
-
-    # Cache probabilities only for classifiers supporting predict_proba().
-    soft_probabilities = {}
-
-    for model_name, model in fitted_models.items():
-        try:
-            soft_probabilities[model_name] = (
-                get_positive_class_probabilities(model, X_test)
-            )
-        except (AttributeError, ValueError, TypeError) as error:
-            print(
-                f"Soft voting unavailable for {model_name}: {error}"
-            )
-
-    hard_names = list(hard_predictions.keys())
-    soft_names = list(soft_probabilities.keys())
-
-    hard_combination_count = sum(
-        comb(len(hard_names), size)
-        for size in range(2, len(hard_names) + 1)
-    )
-    soft_combination_count = sum(
-        comb(len(soft_names), size)
-        for size in range(2, len(soft_names) + 1)
+    test_diabetes_f1 = f1_score(
+        y_test_array[:, 0],
+        predictions[:, 0],
+        zero_division=0
     )
 
-    print("\n" + "=" * 70)
-    print("EXHAUSTIVE VOTING SEARCH")
-    print("=" * 70)
-    print("Hard-voting classifiers:", len(hard_names))
-    print("Hard-voting combinations:", hard_combination_count)
-    print("Soft-voting classifiers:", len(soft_names))
-    print("Soft-voting combinations:", soft_combination_count)
-    print(
-        "Total combinations:",
-        hard_combination_count + soft_combination_count,
+    test_hypertension_f1 = f1_score(
+        y_test_array[:, 1],
+        predictions[:, 1],
+        zero_division=0
     )
 
-    # --------------------------------------------------
-    # HARD VOTING
-    # --------------------------------------------------
-    # In an exact tie, class 0 wins. This matches the normal behaviour
-    # of VotingClassifier, which chooses the lower encoded class.
-    for combination_size in range(2, len(hard_names) + 1):
-        for model_combination in combinations(
-            hard_names,
-            combination_size,
-        ):
-            prediction_stack = np.stack(
-                [
-                    hard_predictions[model_name]
-                    for model_name in model_combination
-                ],
-                axis=0,
-            )
 
-            combined_predictions = (
-                np.sum(prediction_stack, axis=0)
-                > (combination_size / 2)
-            ).astype(int)
+    # --------------------------------------------------------
+    # STORE RESULT
+    # --------------------------------------------------------
 
-            all_results.append(
-                calculate_result(
-                    "hard",
-                    model_combination,
-                    combined_predictions,
-                )
-            )
+    cv_results.append({
 
-    # --------------------------------------------------
-    # SOFT VOTING
-    # --------------------------------------------------
-    for combination_size in range(2, len(soft_names) + 1):
-        for model_combination in combinations(
-            soft_names,
-            combination_size,
-        ):
-            probability_stack = np.stack(
-                [
-                    soft_probabilities[model_name]
-                    for model_name in model_combination
-                ],
-                axis=0,
-            )
+        "Model Name":
+            model_name,
 
-            mean_positive_probability = np.mean(
-                probability_stack,
-                axis=0,
-            )
+        "Best Parameters":
+            str(best_params),
 
-            # A 0.5 tie becomes class 0, matching argmax behaviour.
-            combined_predictions = (
-                mean_positive_probability > 0.5
-            ).astype(int)
+        "Mean CV Overall Accuracy":
+            cv_overall_accuracy,
 
-            all_results.append(
-                calculate_result(
-                    "soft",
-                    model_combination,
-                    combined_predictions,
-                )
-            )
+        "Mean CV Diabetes Accuracy":
+            cv_diabetes_accuracy,
 
-    results_dataframe = pd.DataFrame(all_results)
+        "Mean CV Hypertension Accuracy":
+            cv_hypertension_accuracy,
 
-    # Prefer higher exact-match accuracy, then higher average label
-    # accuracy, then fewer models when results are tied.
-    results_dataframe = results_dataframe.sort_values(
-        by=[
-            "exact_match_accuracy",
-            "mean_label_accuracy",
-            "model_count",
-            "voting",
-            "models",
-        ],
-        ascending=[False, False, True, True, True],
-    ).reset_index(drop=True)
+        "Mean CV Overall F1":
+            cv_overall_f1,
 
-    return results_dataframe
+        "Mean CV Diabetes F1":
+            cv_diabetes_f1,
+
+        "Mean CV Hypertension F1":
+            cv_hypertension_f1,
+
+        "Final Test Overall Accuracy":
+            test_overall_accuracy,
+
+        "Final Test Diabetes Accuracy":
+            test_diabetes_accuracy,
+
+        "Final Test Hypertension Accuracy":
+            test_hypertension_accuracy,
+
+        "Final Test Overall F1":
+            test_overall_f1,
+
+        "Final Test Diabetes F1":
+            test_diabetes_f1,
+
+        "Final Test Hypertension F1":
+            test_hypertension_f1
+
+    })
 
 
-def build_final_voting_classifier(best_result):
-    """
-    Build and fit a real sklearn VotingClassifier using the best subset.
-    """
-    best_model_names = best_result["models"].split(" + ")
-    best_voting_type = best_result["voting"]
+# ============================================================
+# DATAFRAME
+# ============================================================
 
-    estimators = []
-
-    for model_name in best_model_names:
-        base_classifier = get_base_classifier(
-            optimized_classifiers[model_name]
-        )
-        estimators.append((model_name, base_classifier))
-
-    voting_classifier = VotingClassifier(
-        estimators=estimators,
-        voting=best_voting_type,
-        n_jobs=-1,
-    )
-
-    final_model = MultiOutputClassifier(
-        voting_classifier,
-        n_jobs=-1,
-    )
-    final_model.fit(X_train, Y_train)
-
-    return final_model
-
-
-# Fit the models once, evaluate every possible subset, and save all results.
-voting_ready_models = fit_voting_ready_models()
-voting_results = test_all_voting_combinations(voting_ready_models)
-
-results_file = "all_voting_ensemble_results.csv"
-voting_results.to_csv(results_file, index=False)
-
-print("\n" + "=" * 70)
-print("TOP 20 VOTING COMBINATIONS")
-print("=" * 70)
-print(voting_results.head(20).to_string(index=False))
-
-best_result = voting_results.iloc[0]
-
-print("\n" + "=" * 70)
-print("BEST VOTING COMBINATION")
-print("=" * 70)
-print("Voting type:", best_result["voting"])
-print("Models:", best_result["models"])
-print("Number of models:", int(best_result["model_count"]))
-print("Exact-match accuracy:", best_result["exact_match_accuracy"])
-print("Mean label accuracy:", best_result["mean_label_accuracy"])
-print("Diabetes:", best_result["diabetes_accuracy"])
-print("Hypertension:", best_result["hypertension_accuracy"])
-print("Obesity:", best_result["obesity_accuracy"])
-print("Diabetes F1:", best_result["diabetes_f1"])
-print("Hypertension F1:", best_result["hypertension_f1"])
-print("Obesity F1:", best_result["obesity_f1"])
-print("Overall F1:", best_result["overall_f1"])
-print("All results saved to:", results_file)
-
-
-# Fit the final real sklearn voting ensemble using the winning combination.
-best_voting_ensemble = build_final_voting_classifier(best_result)
-final_predictions = best_voting_ensemble.predict(X_test).astype(int)
-
-print("\n" + "=" * 70)
-print("FINAL FITTED VOTINGCLASSIFIER CHECK")
-print("=" * 70)
-print(
-    "Exact-match accuracy:",
-    exact_match_accuracy(Y_test, final_predictions),
-)
-print(
-    "Diabetes:",
-    accuracy_score(Y_test[:, 0], final_predictions[:, 0]),
-)
-print(
-    "Hypertension:",
-    accuracy_score(Y_test[:, 1], final_predictions[:, 1]),
-)
-print(
-    "Obesity:",
-    accuracy_score(Y_test[:, 2], final_predictions[:, 2]),
-)
-print(
-    "Diabetes F1:",
-    f1_score(Y_test[:, 0], final_predictions[:, 0], zero_division=0),
-)
-print(
-    "Hypertension F1:",
-    f1_score(Y_test[:, 1], final_predictions[:, 1], zero_division=0),
-)
-print(
-    "Obesity F1:",
-    f1_score(Y_test[:, 2], final_predictions[:, 2], zero_division=0),
-)
-print(
-    "Overall F1:",
-    f1_score(Y_test, final_predictions, average="macro", zero_division=0),
+cv_results_df = pd.DataFrame(
+    cv_results
 )
 
-individual_models_for_results = {
-    "K-Nearest Neighbours": knn,
-    "Support Vector Machine": svm,
-    "Random Forest": random_forest,
-    "Gaussian Naive Bayes": naive_bayes,
-    "Logistic Regression": logistic_regression,
-    "Ridge Classifier": ridge_classifier,
-    "Decision Tree": decision_tree,
-    "Extra Trees": extra_trees,
-    "Gradient Boosting": gradient_boosting,
-    "SGD Classifier": sgd_classifier,
-}
 
-individual_model_results = []
+# ============================================================
+# SAVE TO EXCEL
+# ============================================================
 
-for model_name, model in individual_models_for_results.items():
-    model_predictions = np.asarray(model.predict(X_test)).astype(int)
-
-    diabetes_accuracy = accuracy_score(
-        Y_test[:, 0],
-        model_predictions[:, 0],
-    )
-    hypertension_accuracy = accuracy_score(
-        Y_test[:, 1],
-        model_predictions[:, 1],
-    )
-    obesity_accuracy = accuracy_score(
-        Y_test[:, 2],
-        model_predictions[:, 2],
-    )
-
-    diabetes_f1 = f1_score(
-        Y_test[:, 0],
-        model_predictions[:, 0],
-        zero_division=0,
-    )
-    hypertension_f1 = f1_score(
-        Y_test[:, 1],
-        model_predictions[:, 1],
-        zero_division=0,
-    )
-    obesity_f1 = f1_score(
-        Y_test[:, 2],
-        model_predictions[:, 2],
-        zero_division=0,
-    )
-    overall_f1 = f1_score(
-        Y_test,
-        model_predictions,
-        average="macro",
-        zero_division=0,
-    )
-
-    individual_model_results.append(
-        {
-            "result_type": "individual_model",
-            "voting": "",
-            "models": model_name,
-            "model_count": 1,
-            "exact_match_accuracy": exact_match_accuracy(
-                Y_test,
-                model_predictions,
-            ),
-            "mean_label_accuracy": float(
-                np.mean(
-                    [
-                        diabetes_accuracy,
-                        hypertension_accuracy,
-                        obesity_accuracy,
-                    ]
-                )
-            ),
-            "diabetes_accuracy": diabetes_accuracy,
-            "hypertension_accuracy": hypertension_accuracy,
-            "obesity_accuracy": obesity_accuracy,
-            "diabetes_f1": diabetes_f1,
-            "hypertension_f1": hypertension_f1,
-            "obesity_f1": obesity_f1,
-            "overall_f1": overall_f1,
-        }
-    )
-
-individual_results_dataframe = pd.DataFrame(
-    individual_model_results
+cv_results_df.to_excel(
+    "cross_validation_results.xlsx",
+    index=False
 )
 
-voting_results_for_file = voting_results.copy()
-voting_results_for_file.insert(
-    0,
-    "result_type",
-    "voting_ensemble",
-)
 
-all_model_results = pd.concat(
-    [
-        individual_results_dataframe,
-        voting_results_for_file,
-    ],
-    ignore_index=True,
-    sort=False,
-)
-
-all_model_results = all_model_results.sort_values(
-    by=[
-        "exact_match_accuracy",
-        "overall_f1",
-        "mean_label_accuracy",
-    ],
-    ascending=[
-        False,
-        False,
-        False,
-    ],
-).reset_index(drop=True)
-
-all_results_file = "all_model_and_voting_results.csv"
-
-all_model_results.to_csv(
-    all_results_file,
-    index=False,
-)
-
-print(
-    "\nAll individual-model and voting-ensemble results saved to:",
-    all_results_file,
-)
+print(cv_results_df)
+print("\nSaved to cross_validation_results.xlsx")

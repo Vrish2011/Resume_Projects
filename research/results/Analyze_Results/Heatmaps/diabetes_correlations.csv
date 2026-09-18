@@ -1,0 +1,8 @@
+Correlations,Diabetes
+num_Weight (kg),0.004682228482448093
+num_Rate you energy levels today,-0.012768921973653457
+"num_On a scale of 0 to 10, how thirsty do you feel today",-0.0015411419324828492
+num_Mention the time when you had Dinner,3.288734075950815e-06
+num_How much water do you have in a day (in liters),-0.01102089433096893
+num_Height (cm),-0.0020003521060522065
+num_Age,0.012007690598115482
