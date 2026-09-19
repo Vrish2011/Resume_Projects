@@ -9,7 +9,7 @@ from sklearn.multioutput import MultiOutputClassifier
 import numpy as np
 from sklearn.naive_bayes import GaussianNB
 from sklearn.pipeline import Pipeline
-from sklearn.model_selection import ParameterGrid
+from sklearn.model_selection import ParameterGrid, cross_val_score
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn.base import clone
 import numpy as np
@@ -227,6 +227,7 @@ parameter_grids = {
 }
 
 
+
 def check_numercal(key_want):
    
     for row in dict_diet:
@@ -336,9 +337,9 @@ Y_test = testing_data[[
 ]].to_numpy()
 
 def evaluate_model(best_params, pipeline):
-    clone(pipeline).set_params(**best_params)
+    pipeline = clone(pipeline).set_params(**best_params)
     pipeline.fit(X_train, Y_train)
-    print(pipeline)
+   
     predictions = np.array(pipeline.predict(X_test))
     overall_accuracy = accuracy_score(Y_test, predictions)
     diabetes_acc = accuracy_score(np.array(Y_test[:, 0]), predictions[:, 0])
@@ -352,15 +353,20 @@ def evaluate_model(best_params, pipeline):
 def optimize_model(pipeline, parameters):
     best_f1 = -1
     best_params = None
+    
     for parameter in ParameterGrid(parameters):
+        scorer = make_scorer(f1_score, average="macro", zero_division=0)
+        cross_validation = KFold(n_splits=5,shuffle=True,random_state=42)
+
+    
+    
+    
         
         current_pipeline = clone(pipeline).set_params(**parameter)
         
         
-        current_pipeline.fit(X_train, Y_train)
-        predictions = current_pipeline.predict(X_test)
-        
-        model_f1_score = f1_score(Y_test, predictions, average="macro", zero_division=0)
+        scores = cross_val_score(current_pipeline, X_train, Y_train, cv=cross_validation, scoring=scorer)
+        model_f1_score = scores.mean()
         if model_f1_score > best_f1:
             best_f1 = model_f1_score
             best_params = parameter.copy()
