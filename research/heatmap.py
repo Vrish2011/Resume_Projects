@@ -24,6 +24,7 @@ numerical_columns = [
     "What time did wake up today",
 
     "On a scale of 0 to 10,  how would you rate your stress/anxiety level",
+    "BMI"
 
     
 ]

@@ -145,6 +145,16 @@ transformed_dataset = pd.DataFrame(
 )
 
 print(transformed_dataset)
+input_columns = [
+    "num__Mention the amount of time of physical activity",
+    "num__How many times a day do you normally eat (include all solid foods i.e., breakfast, lunch, evening snack, dinner)",
+    "num__Rate you energy levels today",
+    "num__Age",
+    "num__How much water do you have in a day (in liters)",
+    
+    "num__BMI",
+    "bool__Gender"
+]
 
 model = IsolationForest(
     contamination=0.05,
